@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum LeadType {
+  CONTACT
+  RESELLER
+}
+
+enum LeadStatus {
+  NEW
+  REVIEWED
+  CLOSED
+}
+
+enum PromoCodeStatus {
+  AVAILABLE
+  CLAIMED
+}
+
+model Product {
+  id               String   @id @default(cuid())
+  name             String
+  slug             String   @unique
+  shortDescription String
+  fullDescription  String
+  category         String
+  imageUrl         String
+  isActive         Boolean  @default(true)
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Zone {
+  id          String   @id @default(cuid())
+  name        String
+  description String
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model SalePoint {
+  id        String   @id @default(cuid())
+  name      String
+  address   String
+  city      String
+  phone     String?
+  latitude  Float
+  longitude Float
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ContactLead {
+  id        String     @id @default(cuid())
+  leadType  LeadType
+  name      String
+  phone     String
+  business  String?
+  city      String
+  message   String
+  status    LeadStatus @default(NEW)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model PromoCode {
+  id               String          @id @default(cuid())
+  code             String          @unique
+  prize            String
+  status           PromoCodeStatus @default(AVAILABLE)
+  claimedAt        DateTime?
+  claimantName     String?
+  claimantPhone    String?
+  claimantBusiness String?
+  claimantCity     String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
