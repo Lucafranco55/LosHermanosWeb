@@ -67,8 +67,8 @@ export function PromoChecker() {
         Ingresá el código impreso en tu etiqueta. Si tiene premio disponible, vas a poder reclamarlo desde acá.
       </p>
       <form onSubmit={onValidate} className="mt-6 grid gap-4 sm:grid-cols-[1fr_auto]">
-        <input value={code} onChange={(event) => setCode(event.target.value.toUpperCase())} placeholder="Ej: LH-0004" className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
-        <button className="rounded-2xl bg-brand-700 px-5 py-3 text-sm font-semibold text-white disabled:opacity-70">
+        <input value={code} onChange={(event) => setCode(event.target.value.toUpperCase())} placeholder="Ej: LH-0004" className="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm transition focus:border-brand-500 focus:bg-white" />
+        <button className="rounded-2xl bg-brand-700 px-5 py-3.5 text-sm font-semibold text-white shadow-card transition hover:bg-brand-800 disabled:opacity-70">
           {validating ? "Validando..." : "Validar código"}
         </button>
       </form>
@@ -86,11 +86,11 @@ export function PromoChecker() {
       ) : null}
       {showClaimForm ? (
         <form onSubmit={onClaim} className="mt-6 grid gap-4 rounded-3xl border border-slate-200 bg-slate-50 p-5">
-          <input placeholder="Nombre y apellido" value={claim.claimantName} onChange={(event) => setClaim((current) => ({ ...current, claimantName: event.target.value }))} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
-          <input placeholder="Teléfono / WhatsApp" value={claim.claimantPhone} onChange={(event) => setClaim((current) => ({ ...current, claimantPhone: event.target.value }))} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
-          <input placeholder="Comercio (opcional)" value={claim.claimantBusiness} onChange={(event) => setClaim((current) => ({ ...current, claimantBusiness: event.target.value }))} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
-          <input placeholder="Localidad" value={claim.claimantCity} onChange={(event) => setClaim((current) => ({ ...current, claimantCity: event.target.value }))} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
-          <button className="rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white disabled:opacity-70">
+          <input placeholder="Nombre y apellido" value={claim.claimantName} onChange={(event) => setClaim((current) => ({ ...current, claimantName: event.target.value }))} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
+          <input placeholder="Teléfono / WhatsApp" value={claim.claimantPhone} onChange={(event) => setClaim((current) => ({ ...current, claimantPhone: event.target.value }))} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
+          <input placeholder="Comercio (opcional)" value={claim.claimantBusiness} onChange={(event) => setClaim((current) => ({ ...current, claimantBusiness: event.target.value }))} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
+          <input placeholder="Localidad" value={claim.claimantCity} onChange={(event) => setClaim((current) => ({ ...current, claimantCity: event.target.value }))} className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm" />
+          <button className="rounded-2xl bg-slate-900 px-5 py-3.5 text-sm font-semibold text-white shadow-card disabled:opacity-70">
             {claiming ? "Enviando..." : "Enviar reclamo"}
           </button>
         </form>

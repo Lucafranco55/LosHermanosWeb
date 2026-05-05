@@ -32,7 +32,7 @@ export function SalePointsMap({ points }: { points: Point[] }) {
 
             return (
               <div key={point.id} className="absolute -translate-x-1/2 -translate-y-1/2" style={{ left: `${x}%`, top: `${y}%` }}>
-                <div className="h-4 w-4 rounded-full border-4 border-white bg-brand-700 shadow-lg" />
+                <div className="h-4 w-4 rounded-full border-4 border-white bg-brand-700 shadow-lg ring-8 ring-brand-100/40" />
                 <div className="mt-2 rounded-xl bg-white/90 px-2 py-1 text-xs font-semibold text-slate-700 shadow">
                   {point.city}
                 </div>
