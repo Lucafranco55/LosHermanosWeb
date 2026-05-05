@@ -2,6 +2,7 @@ import { PublicShell } from "@/components/site/public-shell";
 import { getActiveProducts, getActiveZones, getSiteSettingsMap } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
 import { ArrowRight, Boxes, MapPinned, PackageSearch, ShieldCheck } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 export const dynamic = "force-dynamic";
@@ -22,13 +23,15 @@ export default async function HomePage() {
     <PublicShell>
       <main>
         <section className="relative overflow-hidden border-b border-brand-100 bg-slate-950">
-          <div
-            className="absolute inset-0 bg-cover bg-center opacity-30"
-            style={{
-              backgroundImage:
-                "linear-gradient(135deg, rgba(7,19,30,0.82), rgba(10,53,87,0.76)), url('/fondo-los-hermanos.jpg')"
-            }}
+          <Image
+            src="/fondo-los-hermanos.jpg"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="absolute inset-0 object-cover opacity-35"
           />
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(3,10,18,0.9),rgba(8,31,48,0.82))]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(120,203,255,0.22),transparent_35%),linear-gradient(180deg,rgba(255,255,255,0.04),transparent)]" />
           <div className="relative mx-auto grid max-w-7xl gap-10 px-4 py-20 sm:px-6 lg:grid-cols-[1.08fr_0.92fr] lg:px-8 lg:py-28">
             <div>
