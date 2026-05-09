@@ -59,7 +59,7 @@ export const promoClaimSchema = z.object({
 
 export const siteSettingSchema = z.object({
   key: z.string().trim().min(2).max(100),
-  value: z.string().trim().min(1).max(2000)
+  value: z.string().trim().max(5000)
 });
 
 export const leadStatusSchema = z.nativeEnum(LeadStatus);

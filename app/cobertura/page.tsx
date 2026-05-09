@@ -1,6 +1,6 @@
 import { PublicShell } from "@/components/site/public-shell";
 import { SalePointsMap } from "@/components/site/sale-points-map";
-import { getActiveSalePoints } from "@/lib/queries";
+import { getActiveSalePoints, getSiteSettingsMap } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
 import { MapPinned, MessageCircle, PackageCheck, Route, Truck, Warehouse } from "lucide-react";
 
@@ -12,20 +12,58 @@ export const metadata = buildMetadata({
   path: "/cobertura"
 });
 
-const coverageZones = [
-  "General Belgrano y alrededores",
-  "Zona Oeste",
-  "Zona Sur",
-  "Costa Atlántica",
-  "Ruta 41",
-  "Ruta 29"
-];
+const defaults = {
+  title: "Zonas de cobertura y distribuidores",
+  subtitle: "Realizamos entregas programadas y distribución mayorista según zona y demanda.",
+  frequencyText: "Realizamos entregas programadas y distribución mayorista según zona y demanda.",
+  zones: ["General Belgrano y alrededores", "Zona Oeste", "Zona Sur", "Costa Atlántica", "Ruta 41", "Ruta 29"],
+  distributors: [
+    "Distribuidor Zona Sur",
+    "Contamos con distribuidor en Zona Sur para mejorar la atención y disponibilidad de productos."
+  ],
+  distributorWhatsapp: "A definir",
+  distributorWhatsappUrl:
+    "https://wa.me/5490000000000?text=Hola,%20quiero%20consultar%20por%20productos%20en%20Zona%20Sur",
+  mapText: "Puntos activos y referencias de cobertura territorial."
+};
 
-const distributorWhatsappUrl =
-  "https://wa.me/5490000000000?text=Hola,%20quiero%20consultar%20por%20productos%20en%20Zona%20Sur";
+function setting(settings: Record<string, string>, key: string, fallback: string) {
+  const value = settings[key]?.trim();
+  return value || fallback;
+}
+
+function linesFromSetting(settings: Record<string, string>, key: string, fallback: string[]) {
+  const value = settings[key]?.trim();
+  if (!value) return fallback;
+  const lines = value
+    .split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter(Boolean);
+  return lines.length ? lines : fallback;
+}
+
+function whatsappUrl(value: string) {
+  const trimmed = value.trim();
+  if (!trimmed || trimmed === defaults.distributorWhatsapp) return defaults.distributorWhatsappUrl;
+  if (trimmed.startsWith("https://") || trimmed.startsWith("http://")) return trimmed;
+
+  const digits = trimmed.replace(/\D/g, "");
+  if (!digits) return defaults.distributorWhatsappUrl;
+
+  return `https://wa.me/${digits}?text=Hola,%20quiero%20consultar%20por%20productos%20en%20Zona%20Sur`;
+}
 
 export default async function CoveragePage() {
-  const points = await getActiveSalePoints();
+  const [points, settings] = await Promise.all([getActiveSalePoints(), getSiteSettingsMap()]);
+  const title = setting(settings, "cobertura.title", defaults.title);
+  const subtitle = setting(settings, "cobertura.subtitle", defaults.subtitle);
+  const frequencyText = setting(settings, "cobertura.frequencyText", defaults.frequencyText);
+  const coverageZones = linesFromSetting(settings, "cobertura.zones", defaults.zones);
+  const distributorLines = linesFromSetting(settings, "cobertura.distributors", defaults.distributors);
+  const distributorName = distributorLines[0] || defaults.distributors[0];
+  const distributorText = distributorLines.slice(1).join(" ") || defaults.distributors[1];
+  const distributorWhatsapp = setting(settings, "cobertura.distributorWhatsapp", defaults.distributorWhatsapp);
+  const mapText = setting(settings, "cobertura.mapText", defaults.mapText);
 
   return (
     <PublicShell>
@@ -37,12 +75,8 @@ export default async function CoveragePage() {
                 <MapPinned className="h-4 w-4" />
                 Cobertura
               </div>
-              <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
-                Zonas de cobertura y distribuidores
-              </h1>
-              <p className="mt-5 text-base leading-8 text-slate-600 sm:text-lg">
-                Realizamos entregas programadas y distribución mayorista según zona y demanda.
-              </p>
+              <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">{title}</h1>
+              <p className="mt-5 text-base leading-8 text-slate-600 sm:text-lg">{subtitle}</p>
             </div>
           </div>
         </section>
@@ -54,9 +88,7 @@ export default async function CoveragePage() {
             </div>
             <div>
               <h2 className="text-2xl font-black tracking-tight text-slate-900">Zonas de cobertura</h2>
-              <p className="mt-1 text-sm text-slate-600">
-                Realizamos entregas programadas y distribución mayorista según zona y demanda.
-              </p>
+              <p className="mt-1 text-sm text-slate-600">{frequencyText}</p>
             </div>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -87,13 +119,11 @@ export default async function CoveragePage() {
                 <div className="inline-flex rounded-2xl bg-brand-50 p-3">
                   <Truck className="h-5 w-5 text-brand-700" />
                 </div>
-                <h3 className="mt-4 text-2xl font-bold text-slate-900">Distribuidor Zona Sur</h3>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">
-                  Contamos con distribuidor en Zona Sur para mejorar la atención y disponibilidad de productos.
-                </p>
+                <h3 className="mt-4 text-2xl font-bold text-slate-900">{distributorName}</h3>
+                <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">{distributorText}</p>
               </div>
               <a
-                href={distributorWhatsappUrl}
+                href={whatsappUrl(distributorWhatsapp)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex w-fit items-center gap-2 rounded-full bg-brand-700 px-5 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-brand-800"
@@ -109,11 +139,11 @@ export default async function CoveragePage() {
               </div>
               <div className="rounded-2xl bg-slate-50 p-4">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Contacto</p>
-                <p className="mt-2 text-sm font-semibold text-slate-900">A definir</p>
+                <p className="mt-2 text-sm font-semibold text-slate-900">{distributorName}</p>
               </div>
               <div className="rounded-2xl bg-slate-50 p-4">
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">WhatsApp</p>
-                <p className="mt-2 text-sm font-semibold text-slate-900">A definir</p>
+                <p className="mt-2 text-sm font-semibold text-slate-900">{distributorWhatsapp}</p>
               </div>
               <div className="rounded-2xl bg-slate-50 p-4">
                 <div className="flex items-center gap-2">
@@ -135,7 +165,7 @@ export default async function CoveragePage() {
             </div>
             <div>
               <h2 className="text-2xl font-black tracking-tight text-slate-900">Mapa de localidades</h2>
-              <p className="mt-1 text-sm text-slate-600">Puntos activos y referencias de cobertura territorial.</p>
+              <p className="mt-1 text-sm text-slate-600">{mapText}</p>
             </div>
           </div>
           <SalePointsMap points={points} />
