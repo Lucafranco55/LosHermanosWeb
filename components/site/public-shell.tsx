@@ -8,8 +8,8 @@ const commercialWhatsappUrl = "https://wa.me/5492241526965?text=Hola,%20quiero%2
 const navItems: Array<{ href: string; label: string; icon?: LucideIcon; external?: boolean }> = [
   { href: "/", label: "Inicio" },
   { href: "/productos", label: "Productos", icon: PackageSearch },
+  { href: "/cobertura", label: "Cobertura", icon: MapPinned },
   { href: "/calidad", label: "Calidad", icon: FlaskConical },
-  { href: "/puntos-de-venta", label: "Puntos de venta", icon: MapPinned },
   { href: commercialWhatsappUrl, label: "Contacto", icon: Contact, external: true },
   { href: "/promo", label: "Promo", icon: Gift }
 ];
