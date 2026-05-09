@@ -1,4 +1,4 @@
-import { Boxes, Contact, Gift, type LucideIcon, MapPinned, PackageSearch } from "lucide-react";
+import { Contact, FlaskConical, Gift, type LucideIcon, MapPinned, PackageSearch } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { BrandLogo } from "./brand-logo";
@@ -8,7 +8,7 @@ const commercialWhatsappUrl = "https://wa.me/5492241526965?text=Hola,%20quiero%2
 const navItems: Array<{ href: string; label: string; icon?: LucideIcon; external?: boolean }> = [
   { href: "/", label: "Inicio" },
   { href: "/productos", label: "Productos", icon: PackageSearch },
-  { href: "/distribucion", label: "Distribucion", icon: Boxes },
+  { href: "/calidad", label: "Calidad", icon: FlaskConical },
   { href: "/puntos-de-venta", label: "Puntos de venta", icon: MapPinned },
   { href: commercialWhatsappUrl, label: "Contacto", icon: Contact, external: true },
   { href: "/promo", label: "Promo", icon: Gift }
