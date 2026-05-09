@@ -3,14 +3,47 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import { BrandLogo } from "./brand-logo";
 
-const navItems: Array<{ href: string; label: string; icon?: LucideIcon }> = [
+const commercialWhatsappUrl = "https://wa.me/5492241526965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
+
+const navItems: Array<{ href: string; label: string; icon?: LucideIcon; external?: boolean }> = [
   { href: "/", label: "Inicio" },
   { href: "/productos", label: "Productos", icon: PackageSearch },
-  { href: "/distribucion", label: "Distribución", icon: Boxes },
+  { href: "/distribucion", label: "Distribucion", icon: Boxes },
   { href: "/puntos-de-venta", label: "Puntos de venta", icon: MapPinned },
-  { href: "/contacto", label: "Contacto", icon: Contact },
+  { href: commercialWhatsappUrl, label: "Contacto", icon: Contact, external: true },
   { href: "/promo", label: "Promo", icon: Gift }
 ];
+
+function NavLink({
+  item,
+  className,
+  showIcon = false
+}: {
+  item: (typeof navItems)[number];
+  className: string;
+  showIcon?: boolean;
+}) {
+  const content = (
+    <>
+      {showIcon && item.icon ? <item.icon className="h-4 w-4 text-brand-700" /> : null}
+      {item.label}
+    </>
+  );
+
+  if (item.external) {
+    return (
+      <a href={item.href} target="_blank" rel="noopener noreferrer" className={className}>
+        {content}
+      </a>
+    );
+  }
+
+  return (
+    <Link href={item.href} className={className}>
+      {content}
+    </Link>
+  );
+}
 
 export function PublicShell({ children }: { children: ReactNode }) {
   return (
@@ -20,29 +53,27 @@ export function PublicShell({ children }: { children: ReactNode }) {
           <BrandLogo showTagline imageClassName="h-11 w-auto object-contain" />
           <nav className="hidden items-center gap-6 text-sm font-semibold text-slate-700 md:flex">
             {navItems.map((item) => (
-              <Link key={item.href} href={item.href} className="transition hover:text-brand-700">
-                {item.label}
-              </Link>
+              <NavLink key={item.href} item={item} className="transition hover:text-brand-700" />
             ))}
           </nav>
-          <Link
-            href="/contacto"
-            className="rounded-full bg-brand-700 px-4 py-2.5 text-sm font-semibold text-white shadow-card transition hover:bg-brand-800"
+          <a
+            href={commercialWhatsappUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="whitespace-nowrap rounded-full bg-brand-700 px-3 py-2.5 text-xs font-semibold text-white shadow-card transition hover:bg-brand-800 sm:px-4 sm:text-sm"
           >
-            Consultar
-          </Link>
+            Pedir precio mayorista
+          </a>
         </div>
         <div className="border-t border-brand-100 md:hidden">
           <div className="mx-auto flex max-w-7xl gap-3 overflow-x-auto px-4 py-3 text-sm font-semibold text-slate-700 sm:px-6">
             {navItems.map((item) => (
-              <Link
+              <NavLink
                 key={item.href}
-                href={item.href}
+                item={item}
+                showIcon
                 className="inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-slate-100 px-3 py-2 shadow-sm"
-              >
-                {item.icon ? <item.icon className="h-4 w-4 text-brand-700" /> : null}
-                {item.label}
-              </Link>
+              />
             ))}
           </div>
         </div>
@@ -57,9 +88,9 @@ export function PublicShell({ children }: { children: ReactNode }) {
               textClassName="text-white"
             />
             <div>
-              <p className="text-base font-semibold text-white">Producción y distribución</p>
+              <p className="text-base font-semibold text-white">Produccion y distribucion</p>
               <p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">
-                Soluciones comerciales para productos, distribución territorial, puntos de venta y campañas promocionales.
+                Soluciones comerciales para productos, distribucion territorial, puntos de venta y campanas promocionales.
               </p>
             </div>
           </div>
@@ -67,9 +98,7 @@ export function PublicShell({ children }: { children: ReactNode }) {
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-brand-200">Links</p>
             <div className="flex flex-wrap gap-4">
               {navItems.map((item) => (
-                <Link key={item.href} href={item.href} className="hover:text-white">
-                  {item.label}
-                </Link>
+                <NavLink key={item.href} item={item} className="hover:text-white" />
               ))}
             </div>
           </div>

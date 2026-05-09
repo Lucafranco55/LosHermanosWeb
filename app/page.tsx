@@ -1,7 +1,7 @@
 import { PublicShell } from "@/components/site/public-shell";
 import { getActiveProducts, getActiveZones, getSiteSettingsMap } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
-import { ArrowRight, Boxes, MapPinned, PackageSearch, ShieldCheck } from "lucide-react";
+import { ArrowRight, Boxes, MapPinned, MessageCircle, PackageSearch, ShieldCheck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -11,6 +11,8 @@ export const metadata = buildMetadata({
   title: "Inicio",
   description: "Sitio institucional de Los Hermanos con catálogo, distribución, puntos de venta y promo QR."
 });
+
+const whatsappUrl = "https://wa.me/5492241526965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
 
 export default async function HomePage() {
   const [settings, products, zones] = await Promise.all([
@@ -44,18 +46,21 @@ export default async function HomePage() {
                   "Mostramos productos, zonas de cobertura, puntos de venta y una promo QR pensada para campañas activas."}
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3.5 text-sm font-semibold text-white shadow-card transition hover:scale-[1.02] hover:bg-[#20bd5a]"
+                >
+                  Hablar por WhatsApp
+                  <MessageCircle className="h-4 w-4" />
+                </a>
                 <Link
                   href="/productos"
-                  className="inline-flex items-center gap-2 rounded-full bg-brand-500 px-6 py-3.5 text-sm font-semibold text-white shadow-card transition hover:bg-brand-400"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15"
                 >
                   Ver productos
                   <ArrowRight className="h-4 w-4" />
-                </Link>
-                <Link
-                  href="/promo"
-                  className="rounded-full border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15"
-                >
-                  Ir a la promo
                 </Link>
               </div>
               <div className="mt-10 grid gap-3 sm:grid-cols-3">

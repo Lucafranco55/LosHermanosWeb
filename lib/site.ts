@@ -4,7 +4,7 @@ import { getBaseUrl } from "./utils";
 export const siteConfig = {
   name: "Los Hermanos",
   description:
-    "Web oficial de Los Hermanos con catálogo, distribución, puntos de venta, contacto y promo QR.",
+    "Producción y distribución de agua desmineralizada para talleres, estaciones de servicio y comercios.",
   keywords: [
     "agua desmineralizada",
     "agua desmineralizada 5L",
@@ -39,7 +39,13 @@ export function buildMetadata({
       siteName: siteConfig.name,
       url: `${baseUrl}${path}`,
       locale: "es_AR",
-      type: "website"
+      type: "website",
+      images: [
+        {
+          url: "/icon.png",
+          alt: siteConfig.name
+        }
+      ]
     }
   };
 }

@@ -3,8 +3,11 @@ import { notFound } from "next/navigation";
 import { PublicShell } from "@/components/site/public-shell";
 import { getProductBySlug } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
+import { MessageCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
+
+const productWhatsappUrl = "https://wa.me/5492241526965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -40,9 +43,15 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
             <div className="mt-6 rounded-[1.5rem] bg-slate-50 p-5 text-sm leading-7 text-slate-700">
               {product.fullDescription}
             </div>
-            <Link href="/contacto" className="mt-6 inline-flex rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white">
-              Consultar por este producto
-            </Link>
+            <a
+              href={productWhatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-brand-700 px-6 py-3 text-sm font-semibold text-white transition hover:bg-brand-800"
+            >
+              Cotizar este producto
+              <MessageCircle className="h-4 w-4" />
+            </a>
           </div>
         </div>
       </main>

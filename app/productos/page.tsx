@@ -1,8 +1,7 @@
 import { PublicShell } from "@/components/site/public-shell";
 import { getActiveProducts } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
-import { PackageSearch } from "lucide-react";
-import Link from "next/link";
+import { MessageCircle, PackageSearch } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +9,8 @@ export const metadata = buildMetadata({
   title: "Productos",
   description: "Catálogo general de productos Los Hermanos."
 });
+
+const productWhatsappUrl = "https://wa.me/5492241526965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
 
 export default async function ProductsPage() {
   const products = await getActiveProducts();
@@ -38,9 +39,15 @@ export default async function ProductsPage() {
                 <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-700">{product.category}</p>
                 <h2 className="mt-2 text-2xl font-bold text-slate-900">{product.name}</h2>
                 <p className="mt-3 text-sm leading-6 text-slate-600">{product.shortDescription}</p>
-                <Link href={`/productos/${product.slug}`} className="mt-5 inline-flex rounded-full bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-700">
-                  Ver detalle
-                </Link>
+                <a
+                  href={productWhatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-800"
+                >
+                  Cotizar este producto
+                  <MessageCircle className="h-4 w-4" />
+                </a>
               </div>
             </article>
           ))}
