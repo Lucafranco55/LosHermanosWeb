@@ -7,7 +7,7 @@ import { MessageCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-const productWhatsappUrl = "https://wa.me/5492241526965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
+const productWhatsappUrl = "https://wa.me/5492241562965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;

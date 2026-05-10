@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ReactNode } from "react";
 import { BrandLogo } from "./brand-logo";
 
-const commercialWhatsappUrl = "https://wa.me/5492241526965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
+const commercialWhatsappUrl = "https://wa.me/5492241562965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
 
 const navItems: Array<{ href: string; label: string; icon?: LucideIcon; external?: boolean }> = [
   { href: "/", label: "Inicio" },

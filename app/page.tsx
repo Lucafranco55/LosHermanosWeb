@@ -12,7 +12,7 @@ export const metadata = buildMetadata({
   description: "Sitio institucional de Los Hermanos con catálogo, distribución, puntos de venta y promo QR."
 });
 
-const whatsappUrl = "https://wa.me/5492241526965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
+const whatsappUrl = "https://wa.me/5492241562965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
 
 export default async function HomePage() {
   const [settings, products, zones] = await Promise.all([

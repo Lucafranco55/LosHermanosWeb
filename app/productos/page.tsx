@@ -10,7 +10,7 @@ export const metadata = buildMetadata({
   description: "Catálogo general de productos Los Hermanos."
 });
 
-const productWhatsappUrl = "https://wa.me/5492241526965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
+const productWhatsappUrl = "https://wa.me/5492241562965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
 
 export default async function ProductsPage() {
   const products = await getActiveProducts();
