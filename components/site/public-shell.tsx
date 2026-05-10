@@ -10,7 +10,7 @@ const navItems: Array<{ href: string; label: string; icon?: LucideIcon; external
   { href: "/productos", label: "Productos", icon: PackageSearch },
   { href: "/cobertura", label: "Cobertura", icon: MapPinned },
   { href: "/calidad", label: "Calidad", icon: FlaskConical },
-  { href: commercialWhatsappUrl, label: "Contacto", icon: Contact, external: true },
+  { href: "/contacto", label: "Contacto", icon: Contact },
   { href: "/promo", label: "Promo", icon: Gift }
 ];
 
