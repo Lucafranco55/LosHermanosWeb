@@ -3,6 +3,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { WhatsAppFloatingButton } from "@/components/site/whatsapp-floating-button";
 import { siteConfig } from "@/lib/site";
 import { getBaseUrl } from "@/lib/utils";
+import "leaflet/dist/leaflet.css";
 import "./globals.css";
 
 const siteTitle = "Los Hermanos | Agua desmineralizada";
