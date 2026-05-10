@@ -15,7 +15,9 @@ const locations: Array<{ name: string; position: [number, number] }> = [
   { name: "Las Flores", position: [-36.0143, -59.0991] },
   { name: "Dolores", position: [-36.3132, -57.6792] },
   { name: "Castelli", position: [-36.0891, -57.8062] },
-  { name: "Lezama", position: [-35.876, -57.886] }
+  { name: "Lezama", position: [-35.876, -57.886] },
+  { name: "Pila", position: [-36.0041, -58.1411] },
+  { name: "Gorchs", position: [-35.6833, -58.95] }
 ];
 
 const markerIcon = L.divIcon({
