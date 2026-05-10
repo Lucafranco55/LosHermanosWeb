@@ -31,7 +31,17 @@ export default async function AdminLeadsPage() {
             {leads.map((lead) => (
               <tr key={lead.id}>
                 <td className="px-4 py-4">{formatDate(lead.createdAt)}</td>
-                <td className="px-4 py-4">{lead.leadType === "RESELLER" ? "Revendedor" : "Consulta"}</td>
+                <td className="px-4 py-4">
+                  <span
+                    className={
+                      lead.leadType === "RESELLER"
+                        ? "inline-flex rounded-full bg-brand-50 px-3 py-1 text-xs font-bold text-brand-700"
+                        : "inline-flex rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-700"
+                    }
+                  >
+                    {lead.leadType === "RESELLER" ? "Cliente / distribuidor" : "Consulta general"}
+                  </span>
+                </td>
                 <td className="px-4 py-4">
                   <p className="font-semibold text-slate-900">{lead.name}</p>
                   <p className="text-slate-500">{lead.business || "-"}</p>
