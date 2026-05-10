@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { WhatsAppFloatingButton } from "@/components/site/whatsapp-floating-button";
 import { siteConfig } from "@/lib/site";
 import { getBaseUrl } from "@/lib/utils";
@@ -66,6 +67,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </noscript>
         {children}
         <WhatsAppFloatingButton />
+        <GoogleAnalytics gaId="G-JVG2N9010F" />
       </body>
     </html>
   );
