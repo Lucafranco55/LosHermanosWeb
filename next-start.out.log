@@ -4,8 +4,7 @@
 
    ▲ Next.js 15.5.14
    - Local:        http://localhost:3000
-   - Network:      http://192.168.1.6:3000
+   - Network:      http://192.168.101.11:3000
 
  ✓ Starting...
- ✓ Ready in 649ms
-prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
+ ✓ Ready in 949ms
