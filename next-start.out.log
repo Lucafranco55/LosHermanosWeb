@@ -8,3 +8,4 @@
 
  ✓ Starting...
  ✓ Ready in 649ms
+prisma:error Error in PostgreSQL connection: Error { kind: Closed, cause: None }
