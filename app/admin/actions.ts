@@ -2,6 +2,7 @@
 
 import { LeadStatus, PromoCodeStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import {
   leadStatusSchema,
@@ -17,6 +18,20 @@ function textValue(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
 }
+
+const personalizationKeys = [
+  "brand.name",
+  "brand.slogan",
+  "brand.description",
+  "contact.whatsapp",
+  "contact.email",
+  "contact.instagram",
+  "contact.address",
+  "theme.primaryColor",
+  "theme.secondaryColor",
+  "theme.buttonColor",
+  "theme.backgroundColor"
+];
 
 export async function upsertProductAction(formData: FormData) {
   const parsed = productSchema.parse({
@@ -164,4 +179,31 @@ export async function upsertSiteSettingAction(formData: FormData) {
   revalidatePath("/");
   revalidatePath("/contacto");
   revalidatePath("/admin/contenido");
+}
+
+export async function updatePersonalizationSettingsAction(formData: FormData) {
+  const updates = personalizationKeys.map((key) =>
+    siteSettingSchema.parse({
+      key,
+      value: textValue(formData, key)
+    })
+  );
+
+  await prisma.$transaction(
+    updates.map((setting) =>
+      prisma.siteSetting.upsert({
+        where: { key: setting.key },
+        update: { value: setting.value },
+        create: setting
+      })
+    )
+  );
+
+  revalidatePath("/", "layout");
+  revalidatePath("/");
+  revalidatePath("/contacto");
+  revalidatePath("/productos");
+  revalidatePath("/admin/personalizacion");
+
+  redirect("/admin/personalizacion?saved=1");
 }

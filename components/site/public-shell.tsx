@@ -1,9 +1,9 @@
 import { Contact, FlaskConical, Gift, type LucideIcon, MapPinned, PackageSearch } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
+import { buildWhatsappUrl } from "@/lib/contact-links";
+import { getSiteSettingsMap } from "@/lib/queries";
 import { BrandLogo } from "./brand-logo";
-
-const commercialWhatsappUrl = "https://wa.me/5492241562965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
 
 const navItems: Array<{ href: string; label: string; icon?: LucideIcon; external?: boolean }> = [
   { href: "/", label: "Inicio" },
@@ -45,12 +45,20 @@ function NavLink({
   );
 }
 
-export function PublicShell({ children }: { children: ReactNode }) {
+export async function PublicShell({ children }: { children: ReactNode }) {
+  const settings = await getSiteSettingsMap();
+  const brandName = settings["brand.name"] || "Los Hermanos";
+  const brandSlogan = settings["brand.slogan"] || "Producción y distribución";
+  const brandDescription =
+    settings["brand.description"] ||
+    "Soluciones comerciales para productos, distribución territorial, puntos de venta y campañas promocionales.";
+  const commercialWhatsappUrl = buildWhatsappUrl(settings["contact.whatsapp"], "Hola, quiero información sobre sus productos");
+
   return (
     <div className="min-h-screen bg-[linear-gradient(180deg,#f8fcff_0%,#f5f9fc_48%,#ffffff_100%)] text-slate-900">
       <header className="sticky top-0 z-40 border-b border-white/70 bg-white/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
-          <BrandLogo showTagline imageClassName="h-11 w-auto object-contain" />
+          <BrandLogo showTagline fallbackText={brandName} tagline={brandSlogan} imageClassName="h-11 w-auto object-contain" />
           <nav className="hidden items-center gap-6 text-sm font-semibold text-slate-700 md:flex">
             {navItems.map((item) => (
               <NavLink key={item.href} item={item} className="transition hover:text-brand-700" />
@@ -86,12 +94,11 @@ export function PublicShell({ children }: { children: ReactNode }) {
               className="items-start"
               imageClassName="h-12 w-auto rounded-md bg-white/95 p-1 object-contain"
               textClassName="text-white"
+              fallbackText={brandName}
             />
             <div>
-              <p className="text-base font-semibold text-white">Produccion y distribucion</p>
-              <p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">
-                Soluciones comerciales para productos, distribucion territorial, puntos de venta y campanas promocionales.
-              </p>
+              <p className="text-base font-semibold text-white">{brandSlogan}</p>
+              <p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">{brandDescription}</p>
             </div>
           </div>
           <div className="grid gap-3 sm:justify-self-end">

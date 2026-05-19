@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { PublicShell } from "@/components/site/public-shell";
-import { getProductBySlug } from "@/lib/queries";
+import { buildWhatsappUrl } from "@/lib/contact-links";
+import { getProductBySlug, getSiteSettingsMap } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
 import { MessageCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
-
-const productWhatsappUrl = "https://wa.me/5492241562965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -22,9 +21,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const [product, settings] = await Promise.all([getProductBySlug(slug), getSiteSettingsMap()]);
 
   if (!product || !product.isActive) notFound();
+  const productWhatsappUrl = buildWhatsappUrl(settings["contact.whatsapp"], "Hola, quiero información sobre sus productos");
 
   return (
     <PublicShell>

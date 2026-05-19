@@ -1,5 +1,6 @@
 import { PublicShell } from "@/components/site/public-shell";
-import { getActiveProducts } from "@/lib/queries";
+import { buildWhatsappUrl } from "@/lib/contact-links";
+import { getActiveProducts, getSiteSettingsMap } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
 import { MessageCircle, PackageSearch } from "lucide-react";
 
@@ -10,10 +11,9 @@ export const metadata = buildMetadata({
   description: "Catálogo general de productos Los Hermanos."
 });
 
-const productWhatsappUrl = "https://wa.me/5492241562965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
-
 export default async function ProductsPage() {
-  const products = await getActiveProducts();
+  const [products, settings] = await Promise.all([getActiveProducts(), getSiteSettingsMap()]);
+  const productWhatsappUrl = buildWhatsappUrl(settings["contact.whatsapp"], "Hola, quiero información sobre sus productos");
 
   return (
     <PublicShell>

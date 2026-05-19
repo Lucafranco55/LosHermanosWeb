@@ -11,12 +11,14 @@ export const metadata = buildMetadata({
   description: "Formularios de consulta y alta de clientes o distribuidores."
 });
 
-const instagramUrl = "https://www.instagram.com/";
 const whatsappPhone = "2241562965";
 
 export default async function ContactPage() {
   const settings = await getSiteSettingsMap();
   const email = settings["contact.email"] || "A definir";
+  const whatsapp = settings["contact.whatsapp"] || whatsappPhone;
+  const instagramUrl = settings["contact.instagram"] || "https://www.instagram.com/";
+  const address = settings["contact.address"] || "Buenos Aires";
 
   return (
     <PublicShell>
@@ -44,7 +46,7 @@ export default async function ContactPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-500">WhatsApp / teléfono principal</p>
-                    <p className="text-lg font-bold text-slate-900">{whatsappPhone}</p>
+                    <p className="text-lg font-bold text-slate-900">{whatsapp}</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3">
@@ -62,7 +64,7 @@ export default async function ContactPage() {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-slate-500">Zona de trabajo</p>
-                    <p className="text-lg font-bold text-slate-900">Buenos Aires</p>
+                    <p className="text-lg font-bold text-slate-900">{address}</p>
                   </div>
                 </div>
                 <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 rounded-2xl transition hover:bg-slate-50">

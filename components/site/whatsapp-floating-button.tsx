@@ -1,9 +1,11 @@
 import { MessageCircle } from "lucide-react";
+import { buildWhatsappUrl } from "@/lib/contact-links";
+import { getSiteSettingsMap } from "@/lib/queries";
 
-const whatsappUrl =
-  "https://wa.me/5492241562965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
+export async function WhatsAppFloatingButton() {
+  const settings = await getSiteSettingsMap();
+  const whatsappUrl = buildWhatsappUrl(settings["contact.whatsapp"], "Hola, quiero información sobre sus productos");
 
-export function WhatsAppFloatingButton() {
   return (
     <a
       href={whatsappUrl}

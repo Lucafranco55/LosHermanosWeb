@@ -1,4 +1,5 @@
 import { PublicShell } from "@/components/site/public-shell";
+import { buildWhatsappUrl } from "@/lib/contact-links";
 import { getActiveProducts, getActiveZones, getSiteSettingsMap } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
 import { ArrowRight, Boxes, MapPinned, MessageCircle, PackageSearch, ShieldCheck } from "lucide-react";
@@ -12,14 +13,13 @@ export const metadata = buildMetadata({
   description: "Sitio institucional de Los Hermanos con catálogo, distribución, puntos de venta y promo QR."
 });
 
-const whatsappUrl = "https://wa.me/5492241562965?text=Hola,%20quiero%20información%20sobre%20sus%20productos";
-
 export default async function HomePage() {
   const [settings, products, zones] = await Promise.all([
     getSiteSettingsMap(),
     getActiveProducts(),
     getActiveZones()
   ]);
+  const whatsappUrl = buildWhatsappUrl(settings["contact.whatsapp"], "Hola, quiero información sobre sus productos");
 
   return (
     <PublicShell>

@@ -1,4 +1,4 @@
-import { LayoutDashboard, ListChecks, type LucideIcon, MapPinned, PackageSearch, Settings2, Ticket } from "lucide-react";
+import { LayoutDashboard, ListChecks, type LucideIcon, MapPinned, PackageSearch, Palette, Settings2, Ticket } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { BrandLogo } from "../site/brand-logo";
@@ -10,7 +10,8 @@ const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/admin/puntos-de-venta", label: "Puntos de venta", icon: MapPinned },
   { href: "/admin/consultas", label: "Consultas", icon: ListChecks },
   { href: "/admin/promo", label: "Promo", icon: Ticket },
-  { href: "/admin/contenido", label: "Contenido", icon: Settings2 }
+  { href: "/admin/contenido", label: "Contenido", icon: Settings2 },
+  { href: "/admin/personalizacion", label: "Personalización", icon: Palette }
 ];
 
 export function AdminShell({
