@@ -10,6 +10,7 @@ type ProductImageViewerProps = {
 
 export function ProductImageViewer({ src, alt }: ProductImageViewerProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const imageSrc = src || "/fondo-los-hermanos.jpg";
 
   return (
     <>
@@ -20,7 +21,7 @@ export function ProductImageViewer({ src, alt }: ProductImageViewerProps) {
         aria-label={`Ampliar imagen de ${alt}`}
       >
         <img
-          src={src}
+          src={imageSrc}
           alt={alt}
           className="h-[320px] w-full object-cover transition duration-500 group-hover:scale-[1.03] sm:h-[460px] lg:h-[540px]"
         />
@@ -47,7 +48,7 @@ export function ProductImageViewer({ src, alt }: ProductImageViewerProps) {
             <X className="h-5 w-5" />
           </button>
           <img
-            src={src}
+            src={imageSrc}
             alt={alt}
             className="max-h-[86vh] w-full max-w-5xl rounded-[1.5rem] object-contain shadow-2xl"
             onClick={(event) => event.stopPropagation()}

@@ -12,6 +12,9 @@ export const metadata = buildMetadata({
   description: "Catálogo general de productos Los Hermanos."
 });
 
+const fallbackProductText = "Producto elaborado para uso automotor, técnico y comercial.";
+const fallbackProductImage = "/fondo-los-hermanos.jpg";
+
 export default async function ProductsPage() {
   const products = await getActiveProducts();
 
@@ -44,7 +47,7 @@ export default async function ProductsPage() {
                 <div className="relative z-0 overflow-hidden">
                   <div
                     className="h-60 bg-cover bg-center transition duration-500 group-hover:scale-[1.04]"
-                    style={{ backgroundImage: `url(${product.imageUrl})` }}
+                    style={{ backgroundImage: `url(${product.imageUrl || fallbackProductImage})` }}
                   />
                   <div className="pointer-events-none absolute right-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 text-xs font-bold text-brand-700 shadow-sm backdrop-blur">
                     Ver detalle
@@ -52,9 +55,9 @@ export default async function ProductsPage() {
                   </div>
                 </div>
                 <div className="pointer-events-none relative z-20 p-6">
-                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-700">{product.category}</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-700">{product.category || "Producto"}</p>
                   <h2 className="mt-2 text-2xl font-bold text-slate-900">{product.name}</h2>
-                  <p className="mt-3 text-sm leading-6 text-slate-600">{product.shortDescription}</p>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{product.shortDescription || fallbackProductText}</p>
                   <a
                     href={productWhatsappUrl}
                     target="_blank"

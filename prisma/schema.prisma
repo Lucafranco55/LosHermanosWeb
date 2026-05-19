@@ -29,6 +29,8 @@ model Product {
   slug             String   @unique
   shortDescription String
   fullDescription  String
+  recommendedUses  String   @default("")
+  presentation      String   @default("")
   category         String
   imageUrl         String
   isActive         Boolean  @default(true)

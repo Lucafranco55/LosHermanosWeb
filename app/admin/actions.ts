@@ -40,6 +40,8 @@ export async function upsertProductAction(formData: FormData) {
     slug: textValue(formData, "slug"),
     shortDescription: textValue(formData, "shortDescription"),
     fullDescription: textValue(formData, "fullDescription"),
+    recommendedUses: textValue(formData, "recommendedUses"),
+    presentation: textValue(formData, "presentation"),
     category: textValue(formData, "category"),
     imageUrl: textValue(formData, "imageUrl"),
     isActive: toBoolean(formData.get("isActive")),
@@ -54,6 +56,7 @@ export async function upsertProductAction(formData: FormData) {
 
   revalidatePath("/");
   revalidatePath("/productos");
+  revalidatePath(`/productos/${parsed.slug}`);
   revalidatePath("/admin");
   revalidatePath("/admin/productos");
 }

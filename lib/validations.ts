@@ -10,10 +10,18 @@ export const productSchema = z.object({
   id: z.string().optional(),
   name: z.string().trim().min(2).max(120),
   slug: z.string().trim().min(2).max(140),
-  shortDescription: z.string().trim().min(10).max(220),
-  fullDescription: z.string().trim().min(20).max(2000),
-  category: z.string().trim().min(2).max(80),
-  imageUrl: z.string().trim().url(),
+  shortDescription: z.string().trim().max(220),
+  fullDescription: z.string().trim().max(2000),
+  recommendedUses: z.string().trim().max(1200),
+  presentation: z.string().trim().max(500),
+  category: z.string().trim().max(80),
+  imageUrl: z
+    .string()
+    .trim()
+    .max(500)
+    .refine((value) => !value || value.startsWith("/") || z.string().url().safeParse(value).success, {
+      message: "Usá una URL completa o una ruta local que empiece con /"
+    }),
   isActive: z.boolean(),
   sortOrder: z.number().int().min(0).max(9999)
 });
