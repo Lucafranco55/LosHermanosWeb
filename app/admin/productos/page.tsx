@@ -14,14 +14,21 @@ export default async function AdminProductsPage() {
       <section className="grid gap-6">
         <form action={upsertProductAction} className="grid gap-4 rounded-[2rem] border border-slate-200 bg-slate-50 p-6">
           <h2 className="text-xl font-bold text-slate-900">Nuevo producto</h2>
+          <p className="text-sm leading-6 text-slate-600">
+            La descripción ampliada puede incluir usos recomendados y presentación si necesitás más detalle comercial.
+          </p>
           <div className="grid gap-4 md:grid-cols-2">
             <input name="name" placeholder="Nombre" className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
             <input name="slug" placeholder="Slug" className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
             <input name="category" placeholder="Categoría" className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
             <input name="sortOrder" type="number" placeholder="Orden" className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
-            <input name="imageUrl" placeholder="URL imagen" className="rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2" />
+            <input name="imageUrl" placeholder="URL imagen principal" className="rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2" />
             <textarea name="shortDescription" placeholder="Descripción corta" className="rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2" />
-            <textarea name="fullDescription" placeholder="Descripción completa" className="min-h-32 rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2" />
+            <textarea
+              name="fullDescription"
+              placeholder="Descripción ampliada. Podés incluir usos recomendados y presentación."
+              className="min-h-32 rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2"
+            />
           </div>
           <label className="flex items-center gap-2 text-sm text-slate-700">
             <input type="checkbox" name="isActive" defaultChecked />
@@ -29,18 +36,45 @@ export default async function AdminProductsPage() {
           </label>
           <button className="w-fit rounded-2xl bg-brand-700 px-5 py-3 text-sm font-semibold text-white">Guardar producto</button>
         </form>
+
         {products.map((product) => (
           <div key={product.id} className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
             <form action={upsertProductAction} className="grid gap-4">
               <input type="hidden" name="id" value={product.id} />
               <div className="grid gap-4 md:grid-cols-2">
-                <input name="name" defaultValue={product.name} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
-                <input name="slug" defaultValue={product.slug} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
-                <input name="category" defaultValue={product.category} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
-                <input name="sortOrder" type="number" defaultValue={product.sortOrder} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
-                <input name="imageUrl" defaultValue={product.imageUrl} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2" />
-                <textarea name="shortDescription" defaultValue={product.shortDescription} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2" />
-                <textarea name="fullDescription" defaultValue={product.fullDescription} className="min-h-32 rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2" />
+                <input name="name" aria-label="Nombre" defaultValue={product.name} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
+                <input name="slug" aria-label="Slug" defaultValue={product.slug} className="rounded-2xl border border-slate-200 px-4 py-3 text-sm" />
+                <input
+                  name="category"
+                  aria-label="Categoría"
+                  defaultValue={product.category}
+                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm"
+                />
+                <input
+                  name="sortOrder"
+                  type="number"
+                  aria-label="Orden"
+                  defaultValue={product.sortOrder}
+                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm"
+                />
+                <input
+                  name="imageUrl"
+                  aria-label="URL imagen principal"
+                  defaultValue={product.imageUrl}
+                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2"
+                />
+                <textarea
+                  name="shortDescription"
+                  aria-label="Descripción corta"
+                  defaultValue={product.shortDescription}
+                  className="rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2"
+                />
+                <textarea
+                  name="fullDescription"
+                  aria-label="Descripción ampliada"
+                  defaultValue={product.fullDescription}
+                  className="min-h-32 rounded-2xl border border-slate-200 px-4 py-3 text-sm md:col-span-2"
+                />
               </div>
               <label className="flex items-center gap-2 text-sm text-slate-700">
                 <input type="checkbox" name="isActive" defaultChecked={product.isActive} />

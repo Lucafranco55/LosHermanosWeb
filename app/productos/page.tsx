@@ -1,8 +1,9 @@
 import { PublicShell } from "@/components/site/public-shell";
 import { buildWhatsappUrl } from "@/lib/contact-links";
-import { getActiveProducts, getSiteSettingsMap } from "@/lib/queries";
+import { getActiveProducts } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
-import { MessageCircle, PackageSearch } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, MessageCircle, PackageSearch } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -12,8 +13,7 @@ export const metadata = buildMetadata({
 });
 
 export default async function ProductsPage() {
-  const [products, settings] = await Promise.all([getActiveProducts(), getSiteSettingsMap()]);
-  const productWhatsappUrl = buildWhatsappUrl(settings["contact.whatsapp"], "Hola, quiero información sobre sus productos");
+  const products = await getActiveProducts();
 
   return (
     <PublicShell>
@@ -29,28 +29,45 @@ export default async function ProductsPage() {
           </p>
         </div>
         <div className="mt-10 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {products.map((product) => (
-            <article key={product.id} className="group overflow-hidden rounded-[2rem] border border-brand-100 bg-white shadow-card transition hover:-translate-y-1">
-              <div
-                className="h-60 bg-cover bg-center transition duration-500 group-hover:scale-[1.03]"
-                style={{ backgroundImage: `url(${product.imageUrl})` }}
-              />
-              <div className="p-6">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-700">{product.category}</p>
-                <h2 className="mt-2 text-2xl font-bold text-slate-900">{product.name}</h2>
-                <p className="mt-3 text-sm leading-6 text-slate-600">{product.shortDescription}</p>
-                <a
-                  href={productWhatsappUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-5 inline-flex items-center gap-2 rounded-full bg-brand-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-800"
-                >
-                  Cotizar este producto
-                  <MessageCircle className="h-4 w-4" />
-                </a>
-              </div>
-            </article>
-          ))}
+          {products.map((product) => {
+            const productWhatsappUrl = buildWhatsappUrl(
+              "2241562965",
+              `Hola, quiero cotizar ${product.name}`
+            );
+
+            return (
+              <article
+                key={product.id}
+                className="group relative overflow-hidden rounded-[2rem] border border-brand-100 bg-white shadow-card transition hover:-translate-y-1 hover:shadow-xl"
+              >
+                <Link href={`/productos/${product.slug}`} className="absolute inset-0 z-10" aria-label={`Ver detalle de ${product.name}`} />
+                <div className="relative z-0 overflow-hidden">
+                  <div
+                    className="h-60 bg-cover bg-center transition duration-500 group-hover:scale-[1.04]"
+                    style={{ backgroundImage: `url(${product.imageUrl})` }}
+                  />
+                  <div className="pointer-events-none absolute right-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-2 text-xs font-bold text-brand-700 shadow-sm backdrop-blur">
+                    Ver detalle
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </div>
+                </div>
+                <div className="pointer-events-none relative z-20 p-6">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-brand-700">{product.category}</p>
+                  <h2 className="mt-2 text-2xl font-bold text-slate-900">{product.name}</h2>
+                  <p className="mt-3 text-sm leading-6 text-slate-600">{product.shortDescription}</p>
+                  <a
+                    href={productWhatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="pointer-events-auto relative z-30 mt-5 inline-flex items-center gap-2 rounded-full bg-brand-700 px-4 py-2 text-sm font-semibold text-white transition hover:bg-brand-800"
+                  >
+                    Cotizar este producto
+                    <MessageCircle className="h-4 w-4" />
+                  </a>
+                </div>
+              </article>
+            );
+          })}
         </div>
       </main>
     </PublicShell>
