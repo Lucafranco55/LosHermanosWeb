@@ -1,5 +1,6 @@
 import { ContactForm } from "@/components/forms/contact-form";
 import { PublicShell } from "@/components/site/public-shell";
+import { settingValue } from "@/lib/content-settings";
 import { getSiteSettingsMap } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
 import { ExternalLink, Mail, MapPin, MessageCircle, Phone, Store } from "lucide-react";
@@ -11,14 +12,31 @@ export const metadata = buildMetadata({
   description: "Formularios de consulta y alta de clientes o distribuidores."
 });
 
-const whatsappPhone = "2241562965";
-
 export default async function ContactPage() {
   const settings = await getSiteSettingsMap();
-  const email = settings["contact.email"] || "A definir";
-  const whatsapp = settings["contact.whatsapp"] || whatsappPhone;
-  const instagramUrl = settings["contact.instagram"] || "https://www.instagram.com/";
-  const address = settings["contact.address"] || "Buenos Aires";
+  const brandName = settingValue(settings, "brand.name", "Los Hermanos");
+  const email = settingValue(settings, "contact.email", "No informado");
+  const whatsapp = settingValue(settings, "contact.whatsapp", "2241562965");
+  const instagramUrl = settingValue(settings, "contact.instagram", "https://www.instagram.com/");
+  const address = settingValue(settings, "contact.address", "No informado");
+  const contactContent = {
+    badge: settingValue(settings, "contact.badge", "Contacto"),
+    title: settingValue(settings, "contact.title", "Contacto"),
+    subtitle: settingValue(settings, "contact.subtitle", settingValue(settings, "brand.description")),
+    companyTitle: settingValue(settings, "contact.companyTitle", brandName),
+    companyDescription: settingValue(settings, "contact.companyDescription", settingValue(settings, "brand.description")),
+    phoneLabel: settingValue(settings, "contact.phoneLabel", "WhatsApp"),
+    emailLabel: settingValue(settings, "contact.emailLabel", "Email"),
+    addressLabel: settingValue(settings, "contact.addressLabel", "Zona"),
+    instagramLabel: settingValue(settings, "contact.instagramLabel", "Instagram"),
+    instagramText: settingValue(settings, "contact.instagramText", "Ver perfil"),
+    generalFormTitle: settingValue(settings, "contact.generalFormTitle", "Consulta"),
+    generalFormDescription: settingValue(settings, "contact.generalFormDescription"),
+    generalFormSubmit: settingValue(settings, "contact.generalFormSubmit", "Enviar"),
+    resellerFormTitle: settingValue(settings, "contact.resellerFormTitle", "Cliente / distribuidor"),
+    resellerFormDescription: settingValue(settings, "contact.resellerFormDescription"),
+    resellerFormSubmit: settingValue(settings, "contact.resellerFormSubmit", "Enviar")
+  };
 
   return (
     <PublicShell>
@@ -27,17 +45,19 @@ export default async function ContactPage() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-brand-700 shadow-sm">
               <MessageCircle className="h-4 w-4" />
-              Contacto
+              {contactContent.badge}
             </div>
-            <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">Hablemos de productos y distribución</h1>
+            <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
+              {contactContent.title}
+            </h1>
             <p className="mt-5 text-base leading-8 text-slate-600">
-              Los Hermanos produce y distribuye agua desmineralizada y productos automotores para comercios, talleres y estaciones de servicio.
+              {contactContent.subtitle}
             </p>
 
             <div className="mt-8 rounded-[2rem] border border-brand-100 bg-white p-6 shadow-card">
-              <h2 className="text-2xl font-bold text-slate-900">Los Hermanos</h2>
+              <h2 className="text-2xl font-bold text-slate-900">{contactContent.companyTitle}</h2>
               <p className="mt-2 text-sm leading-7 text-slate-600">
-                Producción y distribución de agua desmineralizada y productos automotores.
+                {contactContent.companyDescription}
               </p>
               <div className="mt-6 grid gap-4">
                 <div className="flex items-start gap-3">
@@ -45,7 +65,7 @@ export default async function ContactPage() {
                     <Phone className="h-5 w-5 text-brand-700" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-500">WhatsApp / teléfono principal</p>
+                    <p className="text-sm font-semibold text-slate-500">{contactContent.phoneLabel}</p>
                     <p className="text-lg font-bold text-slate-900">{whatsapp}</p>
                   </div>
                 </div>
@@ -54,7 +74,7 @@ export default async function ContactPage() {
                     <Mail className="h-5 w-5 text-brand-700" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-500">Email</p>
+                    <p className="text-sm font-semibold text-slate-500">{contactContent.emailLabel}</p>
                     <p className="text-lg font-bold text-slate-900">{email}</p>
                   </div>
                 </div>
@@ -63,7 +83,7 @@ export default async function ContactPage() {
                     <MapPin className="h-5 w-5 text-brand-700" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-500">Zona de trabajo</p>
+                    <p className="text-sm font-semibold text-slate-500">{contactContent.addressLabel}</p>
                     <p className="text-lg font-bold text-slate-900">{address}</p>
                   </div>
                 </div>
@@ -72,8 +92,8 @@ export default async function ContactPage() {
                     <ExternalLink className="h-5 w-5 text-brand-700" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-slate-500">Instagram</p>
-                    <p className="text-lg font-bold text-slate-900">Ver perfil</p>
+                    <p className="text-sm font-semibold text-slate-500">{contactContent.instagramLabel}</p>
+                    <p className="text-lg font-bold text-slate-900">{contactContent.instagramText}</p>
                   </div>
                 </a>
               </div>
@@ -83,9 +103,9 @@ export default async function ContactPage() {
           <section className="grid gap-6 xl:grid-cols-2">
             <ContactForm
               leadType="CONTACT"
-              title="Consulta general"
-              description="Envianos tu consulta y te respondemos a la brevedad."
-              submitLabel="Enviar consulta"
+              title={contactContent.generalFormTitle}
+              description={contactContent.generalFormDescription}
+              submitLabel={contactContent.generalFormSubmit}
             />
             <div className="relative">
               <div className="pointer-events-none absolute right-5 top-5 rounded-2xl bg-brand-50 p-3">
@@ -93,9 +113,9 @@ export default async function ContactPage() {
               </div>
               <ContactForm
                 leadType="RESELLER"
-                title="Quiero ser cliente o distribuidor"
-                description="Completá tus datos comerciales para que podamos evaluar la zona, el tipo de comercio y la operatoria."
-                submitLabel="Enviar datos comerciales"
+                title={contactContent.resellerFormTitle}
+                description={contactContent.resellerFormDescription}
+                submitLabel={contactContent.resellerFormSubmit}
               />
             </div>
           </section>

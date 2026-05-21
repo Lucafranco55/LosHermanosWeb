@@ -181,6 +181,8 @@ export async function upsertSiteSettingAction(formData: FormData) {
 
   revalidatePath("/");
   revalidatePath("/contacto");
+  revalidatePath("/cobertura");
+  revalidatePath("/calidad");
   revalidatePath("/admin/contenido");
 }
 
@@ -205,6 +207,8 @@ export async function updatePersonalizationSettingsAction(formData: FormData) {
   revalidatePath("/", "layout");
   revalidatePath("/");
   revalidatePath("/contacto");
+  revalidatePath("/cobertura");
+  revalidatePath("/calidad");
   revalidatePath("/productos");
   revalidatePath("/admin/personalizacion");
 

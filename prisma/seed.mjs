@@ -21,6 +21,12 @@ async function upsertSalePoint(point) {
   return prisma.salePoint.create({ data: point });
 }
 
+async function createSiteSettingIfMissing(setting) {
+  const existing = await prisma.siteSetting.findUnique({ where: { key: setting.key } });
+  if (existing) return existing;
+  return prisma.siteSetting.create({ data: setting });
+}
+
 async function main() {
   const adminPassword = process.env.ADMIN_PASSWORD || "admin12345";
   const adminEmail = process.env.ADMIN_EMAIL || "admin@loshermanos.com";
@@ -40,9 +46,9 @@ async function main() {
     {
       name: "Agua desmineralizada 5L",
       slug: "agua-desmineralizada-5l",
-      shortDescription: "Formato ideal para uso doméstico, técnico y comercial.",
+      shortDescription: "Formato ideal para uso domestico, tecnico y comercial.",
       fullDescription:
-        "Agua desmineralizada pensada para usos donde se requiere pureza controlada. Recomendada para baterías, planchas, radiadores y mantenimiento general.",
+        "Agua desmineralizada pensada para usos donde se requiere pureza controlada. Recomendada para baterias, planchas, radiadores y mantenimiento general.",
       category: "Agua desmineralizada",
       imageUrl:
         "https://images.unsplash.com/photo-1561047029-3000c68339ca?auto=format&fit=crop&w=1200&q=80",
@@ -52,9 +58,9 @@ async function main() {
     {
       name: "Agua desmineralizada 10L",
       slug: "agua-desmineralizada-10l",
-      shortDescription: "Mayor volumen para talleres, revendedores y logística.",
+      shortDescription: "Mayor volumen para talleres, revendedores y logistica.",
       fullDescription:
-        "Presentación de mayor capacidad para comercios, distribuidores y clientes con reposición frecuente, manteniendo calidad homogénea.",
+        "Presentacion de mayor capacidad para comercios, distribuidores y clientes con reposicion frecuente, manteniendo calidad homogenea.",
       category: "Agua desmineralizada",
       imageUrl:
         "https://images.unsplash.com/photo-1523362628745-0c100150b504?auto=format&fit=crop&w=1200&q=80",
@@ -62,9 +68,9 @@ async function main() {
       sortOrder: 2
     },
     {
-      name: "Líquido limpiaparabrisas",
+      name: "Liquido limpiaparabrisas",
       slug: "liquido-limpiaparabrisas",
-      shortDescription: "Limpieza clara y práctica para uso automotor.",
+      shortDescription: "Limpieza clara y practica para uso automotor.",
       fullDescription:
         "Producto formulado para facilitar la limpieza del parabrisas y mejorar la visibilidad en uso diario automotor.",
       category: "Automotor",
@@ -86,17 +92,17 @@ async function main() {
   for (const zone of [
     {
       name: "Rosario y alrededores",
-      description: "Cobertura comercial en Rosario, Funes, Roldán y zona inmediata.",
+      description: "Cobertura comercial en Rosario, Funes, Roldan y zona inmediata.",
       isActive: true
     },
     {
       name: "Gran Santa Fe",
-      description: "Atención comercial para distribuidores y revendedores de la región.",
+      description: "Atencion comercial para distribuidores y revendedores de la region.",
       isActive: true
     },
     {
       name: "Corredor industrial",
-      description: "Cobertura orientada a talleres, industrias y puntos logísticos clave.",
+      description: "Cobertura orientada a talleres, industrias y puntos logisticos clave.",
       isActive: true
     }
   ]) {
@@ -106,7 +112,7 @@ async function main() {
   for (const point of [
     {
       name: "Autoservicio Centro",
-      address: "San Martín 1220",
+      address: "San Martin 1220",
       city: "Rosario",
       phone: "3415550101",
       latitude: -32.9473,
@@ -114,7 +120,7 @@ async function main() {
       isActive: true
     },
     {
-      name: "Corralón Norte",
+      name: "Corralon Norte",
       address: "Av. Alberdi 4500",
       city: "Rosario",
       phone: "3415550102",
@@ -136,24 +142,146 @@ async function main() {
   }
 
   for (const setting of [
+    { key: "brand.name", value: "Los Hermanos" },
+    { key: "brand.slogan", value: "Produccion y distribucion" },
+    {
+      key: "brand.description",
+      value: "Produccion y distribucion de agua desmineralizada y productos automotores."
+    },
+    { key: "contact.whatsapp", value: "2241562965" },
+    { key: "contact.email", value: "ventas@loshermanosagua.com" },
+    { key: "contact.instagram", value: "https://www.instagram.com/" },
+    { key: "contact.address", value: "General Belgrano y zona de cobertura" },
+    { key: "home.heroEyebrow", value: "Los Hermanos" },
     {
       key: "home.heroTitle",
-      value: "Agua desmineralizada y soluciones para distribución inteligente"
+      value: "Agua desmineralizada y soluciones para distribucion inteligente"
     },
     {
       key: "home.heroText",
       value:
         "Fabricamos, distribuimos y acercamos productos confiables para comercios, talleres y clientes finales."
     },
-    { key: "site.tagline", value: "Producción, distribución y cercanía comercial." },
-    { key: "contact.whatsapp", value: "+54 9 341 555 0000" },
-    { key: "contact.email", value: "ventas@loshermanosagua.com" }
+    { key: "home.primaryCtaLabel", value: "Hablar por WhatsApp" },
+    { key: "home.secondaryCtaLabel", value: "Ver productos" },
+    { key: "home.highlight1", value: "Produccion confiable" },
+    { key: "home.highlight2", value: "Distribucion organizada" },
+    { key: "home.highlight3", value: "Cobertura comercial" },
+    { key: "home.aboutEyebrow", value: "Quienes somos" },
+    { key: "home.aboutTitle", value: "Produccion, distribucion y cercania comercial." },
+    {
+      key: "home.aboutText",
+      value:
+        "Web institucional enfocada en catalogo, puntos de venta y captacion comercial sin complejidad de e-commerce."
+    },
+    { key: "home.productsStatLabel", value: "Productos activos" },
+    { key: "home.zonesStatLabel", value: "Zonas de distribucion" },
+    { key: "home.feature1Title", value: "Catalogo ordenado" },
+    {
+      key: "home.feature1Text",
+      value: "Presentacion clara de linea de productos, categorias y detalles sin ruido comercial."
+    },
+    { key: "home.feature2Title", value: "Distribucion escalable" },
+    {
+      key: "home.feature2Text",
+      value: "Cobertura territorial, puntos de venta y consultas centralizadas para crecimiento operativo."
+    },
+    { key: "home.feature3Title", value: "Promo controlada" },
+    {
+      key: "home.feature3Text",
+      value: "Validacion de codigos, reclamos y trazabilidad sin exponer logica sensible al frontend."
+    },
+    { key: "contact.badge", value: "Contacto" },
+    { key: "contact.title", value: "Hablemos de productos y distribucion" },
+    {
+      key: "contact.subtitle",
+      value:
+        "Los Hermanos produce y distribuye agua desmineralizada y productos automotores para comercios, talleres y estaciones de servicio."
+    },
+    { key: "contact.companyTitle", value: "Los Hermanos" },
+    {
+      key: "contact.companyDescription",
+      value: "Produccion y distribucion de agua desmineralizada y productos automotores."
+    },
+    { key: "contact.phoneLabel", value: "WhatsApp / telefono principal" },
+    { key: "contact.emailLabel", value: "Email" },
+    { key: "contact.addressLabel", value: "Zona de trabajo" },
+    { key: "contact.instagramLabel", value: "Instagram" },
+    { key: "contact.instagramText", value: "Ver perfil" },
+    { key: "contact.generalFormTitle", value: "Consulta general" },
+    { key: "contact.generalFormDescription", value: "Envianos tu consulta y te respondemos a la brevedad." },
+    { key: "contact.generalFormSubmit", value: "Enviar consulta" },
+    { key: "contact.resellerFormTitle", value: "Quiero ser cliente o distribuidor" },
+    {
+      key: "contact.resellerFormDescription",
+      value:
+        "Completa tus datos comerciales para que podamos evaluar la zona, el tipo de comercio y la operatoria."
+    },
+    { key: "contact.resellerFormSubmit", value: "Enviar datos comerciales" },
+    { key: "quality.badge", value: "Calidad" },
+    { key: "quality.title", value: "Calidad y analisis" },
+    {
+      key: "quality.subtitle",
+      value:
+        "Controlamos la pureza de nuestra agua desmineralizada para garantizar un producto confiable para uso automotor e industrial."
+    },
+    { key: "quality.pdfLabel", value: "Ver analisis de laboratorio" },
+    { key: "quality.pdfUrl", value: "/analisis-laboratorio.pdf" },
+    { key: "quality.phLabel", value: "pH" },
+    { key: "quality.ph", value: "pH controlado para mantener estabilidad en aplicaciones automotrices e industriales." },
+    { key: "quality.tdsLabel", value: "TDS" },
+    { key: "quality.tds", value: "TDS reducido, con bajo nivel de solidos disueltos." },
+    { key: "quality.conductivityLabel", value: "Conductividad" },
+    { key: "quality.conductivity", value: "Conductividad controlada para verificar la desmineralizacion del agua." },
+    { key: "quality.processLabel", value: "Proceso por osmosis inversa" },
+    { key: "quality.process", value: "Proceso por osmosis inversa para reducir sales, minerales e impurezas." },
+    { key: "quality.usageLabel", value: "Uso automotor e industrial" },
+    {
+      key: "quality.usage",
+      value: "Uso recomendado en baterias, radiadores, talleres, estaciones de servicio y procesos industriales."
+    },
+    { key: "cobertura.badge", value: "Cobertura" },
+    { key: "cobertura.title", value: "Zonas de cobertura y distribuidores" },
+    {
+      key: "cobertura.subtitle",
+      value: "Realizamos entregas programadas y distribucion mayorista segun zona y demanda."
+    },
+    { key: "cobertura.mapTitle", value: "Mapa de cobertura" },
+    {
+      key: "cobertura.mapText",
+      value: "Mapa real de localidades donde organizamos entregas programadas y cobertura comercial."
+    },
+    { key: "cobertura.distributorsTitle", value: "Distribuidores oficiales" },
+    {
+      key: "cobertura.distributorsIntro",
+      value:
+        "Contamos con distribuidores aliados para mejorar la atencion, disponibilidad y cobertura de nuestros productos."
+    },
+    {
+      key: "cobertura.distributors",
+      value:
+        "Distribuidor Zona Sur\nContamos con distribuidor en Zona Sur para mejorar la atencion y disponibilidad de productos."
+    },
+    { key: "cobertura.distributorZone", value: "Zona Sur" },
+    { key: "cobertura.distributorContact", value: "A definir" },
+    { key: "cobertura.distributorWhatsapp", value: "A definir" },
+    {
+      key: "cobertura.distributorProducts",
+      value: "Agua desmineralizada, lavaparabrisas y productos automotores"
+    },
+    { key: "cobertura.distributorButtonLabel", value: "Contactar distribuidor" },
+    { key: "cobertura.zonesTitle", value: "Zonas de cobertura" },
+    {
+      key: "cobertura.frequencyText",
+      value: "Realizamos entregas programadas y distribucion mayorista segun zona y demanda."
+    },
+    {
+      key: "cobertura.zones",
+      value: "Zona Oeste\nZona Sur\nRuta 41\nRuta 29\nGeneral Belgrano y alrededores"
+    },
+    { key: "site.tagline", value: "Produccion, distribucion y cercania comercial." }
   ]) {
-    await prisma.siteSetting.upsert({
-      where: { key: setting.key },
-      update: { value: setting.value },
-      create: setting
-    });
+    await createSiteSettingIfMissing(setting);
   }
 
   for (const promoCode of [

@@ -1,5 +1,6 @@
 import { CoverageMap } from "@/components/site/coverage-map";
 import { PublicShell } from "@/components/site/public-shell";
+import { settingLines, settingValue } from "@/lib/content-settings";
 import { getSiteSettingsMap } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
 import { MapPinned, MessageCircle, PackageCheck, Route, Truck, Warehouse } from "lucide-react";
@@ -12,58 +13,42 @@ export const metadata = buildMetadata({
   path: "/cobertura"
 });
 
-const defaults = {
-  title: "Zonas de cobertura y distribuidores",
-  subtitle: "Realizamos entregas programadas y distribución mayorista según zona y demanda.",
-  frequencyText: "Realizamos entregas programadas y distribución mayorista según zona y demanda.",
-  zones: ["Zona Oeste", "Zona Sur", "Ruta 41", "Ruta 29", "General Belgrano y alrededores"],
-  distributors: [
-    "Distribuidor Zona Sur",
-    "Contamos con distribuidores aliados para mejorar la atención, disponibilidad y cobertura de nuestros productos."
-  ],
-  distributorWhatsapp: "A definir",
-  distributorWhatsappUrl:
-    "https://wa.me/5490000000000?text=Hola,%20quiero%20consultar%20por%20productos%20en%20Zona%20Sur",
-  mapText: "Mapa real de localidades donde organizamos entregas programadas y cobertura comercial."
-};
-
-function setting(settings: Record<string, string>, key: string, fallback: string) {
-  const value = settings[key]?.trim();
-  return value || fallback;
-}
-
-function linesFromSetting(settings: Record<string, string>, key: string, fallback: string[]) {
-  const value = settings[key]?.trim();
-  if (!value) return fallback;
-  const lines = value
-    .split(/\r?\n/)
-    .map((line) => line.trim())
-    .filter(Boolean);
-  return lines.length ? lines : fallback;
-}
+const defaultDistributorWhatsappUrl =
+  "https://wa.me/5490000000000?text=Hola,%20quiero%20consultar%20por%20productos%20en%20Zona%20Sur";
 
 function whatsappUrl(value: string) {
   const trimmed = value.trim();
-  if (!trimmed || trimmed === defaults.distributorWhatsapp) return defaults.distributorWhatsappUrl;
+  if (!trimmed || trimmed === "A definir") return defaultDistributorWhatsappUrl;
   if (trimmed.startsWith("https://") || trimmed.startsWith("http://")) return trimmed;
 
   const digits = trimmed.replace(/\D/g, "");
-  if (!digits) return defaults.distributorWhatsappUrl;
+  if (!digits) return defaultDistributorWhatsappUrl;
 
   return `https://wa.me/${digits}?text=Hola,%20quiero%20consultar%20por%20productos%20en%20Zona%20Sur`;
 }
 
 export default async function CoveragePage() {
   const settings = await getSiteSettingsMap();
-  const title = setting(settings, "cobertura.title", defaults.title);
-  const subtitle = setting(settings, "cobertura.subtitle", defaults.subtitle);
-  const frequencyText = setting(settings, "cobertura.frequencyText", defaults.frequencyText);
-  const coverageZones = linesFromSetting(settings, "cobertura.zones", defaults.zones);
-  const distributorLines = linesFromSetting(settings, "cobertura.distributors", defaults.distributors);
-  const distributorName = distributorLines[0] || defaults.distributors[0];
-  const distributorText = distributorLines.slice(1).join(" ") || defaults.distributors[1];
-  const distributorWhatsapp = setting(settings, "cobertura.distributorWhatsapp", defaults.distributorWhatsapp);
-  const mapText = setting(settings, "cobertura.mapText", defaults.mapText);
+  const distributorLines = settingLines(settings, "cobertura.distributors", ["Distribuidor"]);
+  const distributorName = distributorLines[0] || "Distribuidor";
+  const distributorText = distributorLines.slice(1).join(" ");
+  const distributorWhatsapp = settingValue(settings, "cobertura.distributorWhatsapp", "A definir");
+  const coverageZones = settingLines(settings, "cobertura.zones", []);
+  const coverageContent = {
+    badge: settingValue(settings, "cobertura.badge", "Cobertura"),
+    title: settingValue(settings, "cobertura.title", "Cobertura"),
+    subtitle: settingValue(settings, "cobertura.subtitle"),
+    mapTitle: settingValue(settings, "cobertura.mapTitle", "Mapa"),
+    mapText: settingValue(settings, "cobertura.mapText"),
+    distributorsTitle: settingValue(settings, "cobertura.distributorsTitle", "Distribuidores"),
+    distributorsIntro: settingValue(settings, "cobertura.distributorsIntro"),
+    distributorButtonLabel: settingValue(settings, "cobertura.distributorButtonLabel", "Contactar"),
+    distributorZone: settingValue(settings, "cobertura.distributorZone", "A definir"),
+    distributorContact: settingValue(settings, "cobertura.distributorContact", "A definir"),
+    distributorProducts: settingValue(settings, "cobertura.distributorProducts", "A definir"),
+    zonesTitle: settingValue(settings, "cobertura.zonesTitle", "Zonas"),
+    frequencyText: settingValue(settings, "cobertura.frequencyText")
+  };
 
   return (
     <PublicShell>
@@ -73,10 +58,14 @@ export default async function CoveragePage() {
             <div className="max-w-3xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-brand-100 bg-white px-4 py-2 text-sm font-bold uppercase tracking-[0.18em] text-brand-700 shadow-sm">
                 <MapPinned className="h-4 w-4" />
-                Cobertura
+                {coverageContent.badge}
               </div>
-              <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">{title}</h1>
-              <p className="mt-5 text-base leading-8 text-slate-600 sm:text-lg">{subtitle}</p>
+              <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">
+                {coverageContent.title}
+              </h1>
+              <p className="mt-5 text-base leading-8 text-slate-600 sm:text-lg">
+                {coverageContent.subtitle}
+              </p>
             </div>
           </div>
         </section>
@@ -87,8 +76,10 @@ export default async function CoveragePage() {
               <MapPinned className="h-5 w-5 text-brand-700" />
             </div>
             <div>
-              <h2 className="text-2xl font-black tracking-tight text-slate-900">Mapa de cobertura</h2>
-              <p className="mt-1 text-sm text-slate-600">{mapText}</p>
+              <h2 className="text-2xl font-black tracking-tight text-slate-900">
+                {coverageContent.mapTitle}
+              </h2>
+              <p className="mt-1 text-sm text-slate-600">{coverageContent.mapText}</p>
             </div>
           </div>
           <CoverageMap />
@@ -100,10 +91,10 @@ export default async function CoveragePage() {
               <Warehouse className="h-5 w-5 text-brand-700" />
             </div>
             <div>
-              <h2 className="text-2xl font-black tracking-tight text-slate-900">Distribuidores oficiales</h2>
-              <p className="mt-1 text-sm text-slate-600">
-                Contamos con distribuidores aliados para mejorar la atención, disponibilidad y cobertura de nuestros productos.
-              </p>
+              <h2 className="text-2xl font-black tracking-tight text-slate-900">
+                {coverageContent.distributorsTitle}
+              </h2>
+              <p className="mt-1 text-sm text-slate-600">{coverageContent.distributorsIntro}</p>
             </div>
           </div>
           <article className="rounded-[2rem] border border-brand-100 bg-white p-6 shadow-card">
@@ -113,7 +104,7 @@ export default async function CoveragePage() {
                   <Truck className="h-5 w-5 text-brand-700" />
                 </div>
                 <h3 className="mt-4 text-2xl font-bold text-slate-900">{distributorName}</h3>
-                <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">{distributorText}</p>
+                {distributorText ? <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">{distributorText}</p> : null}
               </div>
               <a
                 href={whatsappUrl(distributorWhatsapp)}
@@ -121,30 +112,21 @@ export default async function CoveragePage() {
                 rel="noopener noreferrer"
                 className="inline-flex w-fit items-center gap-2 rounded-full bg-brand-700 px-5 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-brand-800"
               >
-                Contactar distribuidor
+                {coverageContent.distributorButtonLabel}
                 <MessageCircle className="h-4 w-4" />
               </a>
             </div>
             <div className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Zona</p>
-                <p className="mt-2 text-sm font-semibold text-slate-900">Zona Sur</p>
-              </div>
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Contacto</p>
-                <p className="mt-2 text-sm font-semibold text-slate-900">A definir</p>
-              </div>
-              <div className="rounded-2xl bg-slate-50 p-4">
-                <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">WhatsApp</p>
-                <p className="mt-2 text-sm font-semibold text-slate-900">{distributorWhatsapp}</p>
-              </div>
+              <InfoBox label="Zona" value={coverageContent.distributorZone} />
+              <InfoBox label="Contacto" value={coverageContent.distributorContact} />
+              <InfoBox label="WhatsApp" value={distributorWhatsapp} />
               <div className="rounded-2xl bg-slate-50 p-4">
                 <div className="flex items-center gap-2">
                   <PackageCheck className="h-4 w-4 text-brand-700" />
                   <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">Productos disponibles</p>
                 </div>
                 <p className="mt-2 text-sm font-semibold leading-6 text-slate-900">
-                  Agua desmineralizada, lavaparabrisas y productos automotores
+                  {coverageContent.distributorProducts}
                 </p>
               </div>
             </div>
@@ -157,22 +139,35 @@ export default async function CoveragePage() {
               <Route className="h-5 w-5 text-brand-700" />
             </div>
             <div>
-              <h2 className="text-2xl font-black tracking-tight text-slate-900">Zonas de cobertura</h2>
-              <p className="mt-1 text-sm text-slate-600">{frequencyText}</p>
+              <h2 className="text-2xl font-black tracking-tight text-slate-900">
+                {coverageContent.zonesTitle}
+              </h2>
+              <p className="mt-1 text-sm text-slate-600">{coverageContent.frequencyText}</p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-3">
-            {coverageZones.map((zone) => (
-              <span
-                key={zone}
-                className="rounded-full border border-brand-100 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm"
-              >
-                {zone}
-              </span>
-            ))}
-          </div>
+          {coverageZones.length ? (
+            <div className="flex flex-wrap gap-3">
+              {coverageZones.map((zone) => (
+                <span
+                  key={zone}
+                  className="rounded-full border border-brand-100 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm"
+                >
+                  {zone}
+                </span>
+              ))}
+            </div>
+          ) : null}
         </section>
       </main>
     </PublicShell>
+  );
+}
+
+function InfoBox({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl bg-slate-50 p-4">
+      <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">{label}</p>
+      <p className="mt-2 text-sm font-semibold text-slate-900">{value}</p>
+    </div>
   );
 }

@@ -42,8 +42,8 @@ const allKeys = [
   ...colorFields.map((field) => field.key)
 ];
 
-function valueFor(settings: Record<string, string>, key: string, fallback: string) {
-  return settings[key] || fallback;
+function valueFor(settings: Record<string, string>, key: string) {
+  return settings[key] || "";
 }
 
 export default async function AdminPersonalizationPage({
@@ -77,13 +77,15 @@ export default async function AdminPersonalizationPage({
                   {field.type === "textarea" ? (
                     <textarea
                       name={field.key}
-                      defaultValue={valueFor(settings, field.key, field.fallback)}
+                      defaultValue={valueFor(settings, field.key)}
+                      placeholder={field.fallback}
                       className="min-h-28 rounded-2xl border border-slate-200 px-4 py-3 text-sm"
                     />
                   ) : (
                     <input
                       name={field.key}
-                      defaultValue={valueFor(settings, field.key, field.fallback)}
+                      defaultValue={valueFor(settings, field.key)}
+                      placeholder={field.fallback}
                       className="rounded-2xl border border-slate-200 px-4 py-3 text-sm"
                     />
                   )}
@@ -103,7 +105,7 @@ export default async function AdminPersonalizationPage({
                 <input
                   type="color"
                   name={field.key}
-                  defaultValue={valueFor(settings, field.key, field.fallback)}
+                  defaultValue={valueFor(settings, field.key) || field.fallback}
                   className="h-12 rounded-2xl border border-slate-200 bg-white px-2 py-1"
                 />
               </label>
