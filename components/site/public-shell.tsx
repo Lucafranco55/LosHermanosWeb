@@ -1,4 +1,4 @@
-import { Contact, FlaskConical, Gift, type LucideIcon, MapPinned, PackageSearch } from "lucide-react";
+import { Contact, FlaskConical, type LucideIcon, MapPinned, PackageSearch } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { buildWhatsappUrl } from "@/lib/contact-links";
@@ -10,8 +10,7 @@ const navItems: Array<{ href: string; label: string; icon?: LucideIcon; external
   { href: "/productos", label: "Productos", icon: PackageSearch },
   { href: "/cobertura", label: "Cobertura", icon: MapPinned },
   { href: "/calidad", label: "Calidad", icon: FlaskConical },
-  { href: "/contacto", label: "Contacto", icon: Contact },
-  { href: "/promo", label: "Promo", icon: Gift }
+  { href: "/contacto", label: "Contacto", icon: Contact }
 ];
 
 function NavLink({
@@ -51,7 +50,7 @@ export async function PublicShell({ children }: { children: ReactNode }) {
   const brandSlogan = settings["brand.slogan"] || "Producción y distribución";
   const brandDescription =
     settings["brand.description"] ||
-    "Soluciones comerciales para productos, distribución territorial, puntos de venta y campañas promocionales.";
+    "Soluciones comerciales para productos, distribución territorial y puntos de venta.";
   const commercialWhatsappUrl = buildWhatsappUrl(settings["contact.whatsapp"], "Hola, quiero información sobre sus productos");
 
   return (

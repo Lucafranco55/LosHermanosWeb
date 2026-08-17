@@ -11,8 +11,12 @@ export const dynamic = "force-dynamic";
 
 export const metadata = buildMetadata({
   title: "Inicio",
-  description: "Sitio institucional de Los Hermanos con catalogo, distribucion, puntos de venta y promo QR."
+  description: "Sitio institucional de Los Hermanos con catalogo, distribucion y puntos de venta."
 });
+
+function isPromoRelatedText(value: string) {
+  return value.toLowerCase().includes("promo");
+}
 
 export default async function HomePage() {
   const [settings, products, zones] = await Promise.all([
@@ -57,7 +61,7 @@ export default async function HomePage() {
       title: settingValue(settings, "home.feature3Title"),
       text: settingValue(settings, "home.feature3Text")
     }
-  ].filter((item) => item.title || item.text);
+  ].filter((item) => (item.title || item.text) && !isPromoRelatedText(`${item.title} ${item.text}`));
 
   return (
     <PublicShell>
