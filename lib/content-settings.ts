@@ -56,6 +56,14 @@ export const contentSettingGroups: EditableSettingGroup[] = [
     ]
   },
   {
+    title: "Productos",
+    settings: [
+      { key: "products.eyebrow", label: "Productos - etiqueta superior" },
+      { key: "products.title", label: "Productos - titulo principal" },
+      { key: "products.description", label: "Productos - descripcion" }
+    ]
+  },
+  {
     title: "Calidad",
     settings: [
       { key: "quality.badge", label: "Calidad - etiqueta superior" },

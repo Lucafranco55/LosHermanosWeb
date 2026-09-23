@@ -1,25 +1,55 @@
 import { prisma } from "./prisma";
 
 export async function getSiteSettingsMap() {
-  const settings = await prisma.siteSetting.findMany();
-  return Object.fromEntries(settings.map((setting) => [setting.key, setting.value]));
+  try {
+    const settings = await prisma.siteSetting.findMany();
+    return Object.fromEntries(settings.map((setting) => [setting.key, setting.value]));
+  } catch {
+    return {};
+  }
 }
 
-export async function getActiveProducts() {
+export async function getActiveProducts(categorySlug?: string) {
   return prisma.product.findMany({
-    where: { isActive: true },
+    where: {
+      isActive: true,
+      category: {
+        isActive: true,
+        ...(categorySlug ? { slug: categorySlug } : {})
+      }
+    },
+    include: { category: true },
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }]
   });
 }
 
 export async function getAllProducts() {
   return prisma.product.findMany({
+    include: { category: true },
     orderBy: [{ sortOrder: "asc" }, { name: "asc" }]
   });
 }
 
 export async function getProductBySlug(slug: string) {
-  return prisma.product.findUnique({ where: { slug } });
+  return prisma.product.findUnique({ where: { slug }, include: { category: true } });
+}
+
+export async function getActiveProductCategories() {
+  return prisma.productCategory.findMany({
+    where: { isActive: true },
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }]
+  });
+}
+
+export async function getAllProductCategories() {
+  return prisma.productCategory.findMany({
+    include: { _count: { select: { products: true } } },
+    orderBy: [{ sortOrder: "asc" }, { name: "asc" }]
+  });
+}
+
+export async function getProductCategoryBySlug(slug: string) {
+  return prisma.productCategory.findUnique({ where: { slug } });
 }
 
 export async function getActiveZones() {

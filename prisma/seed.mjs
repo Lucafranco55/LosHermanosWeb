@@ -27,6 +27,15 @@ async function createSiteSettingIfMissing(setting) {
   return prisma.siteSetting.create({ data: setting });
 }
 
+function slugify(value) {
+  return value
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 async function main() {
   const adminPassword = process.env.ADMIN_PASSWORD || "admin12345";
   const adminEmail = process.env.ADMIN_EMAIL || "admin@loshermanos.com";
@@ -49,7 +58,7 @@ async function main() {
       shortDescription: "Formato ideal para uso domestico, tecnico y comercial.",
       fullDescription:
         "Agua desmineralizada pensada para usos donde se requiere pureza controlada. Recomendada para baterias, planchas, radiadores y mantenimiento general.",
-      category: "Agua desmineralizada",
+      categoryName: "Agua desmineralizada",
       imageUrl:
         "https://images.unsplash.com/photo-1561047029-3000c68339ca?auto=format&fit=crop&w=1200&q=80",
       isActive: true,
@@ -61,7 +70,7 @@ async function main() {
       shortDescription: "Mayor volumen para talleres, revendedores y logistica.",
       fullDescription:
         "Presentacion de mayor capacidad para comercios, distribuidores y clientes con reposicion frecuente, manteniendo calidad homogenea.",
-      category: "Agua desmineralizada",
+      categoryName: "Agua desmineralizada",
       imageUrl:
         "https://images.unsplash.com/photo-1523362628745-0c100150b504?auto=format&fit=crop&w=1200&q=80",
       isActive: true,
@@ -73,7 +82,7 @@ async function main() {
       shortDescription: "Limpieza clara y practica para uso automotor.",
       fullDescription:
         "Producto formulado para facilitar la limpieza del parabrisas y mejorar la visibilidad en uso diario automotor.",
-      category: "Automotor",
+      categoryName: "Automotor",
       imageUrl:
         "https://images.unsplash.com/photo-1486006920555-c77dcf18193c?auto=format&fit=crop&w=1200&q=80",
       isActive: true,
@@ -82,10 +91,23 @@ async function main() {
   ];
 
   for (const product of products) {
+    const { categoryName, ...productData } = product;
+    const category = await prisma.productCategory.upsert({
+      where: { name: categoryName },
+      update: {},
+      create: {
+        name: categoryName,
+        slug: slugify(categoryName)
+      }
+    });
+
     await prisma.product.upsert({
       where: { slug: product.slug },
-      update: product,
-      create: product
+      update: {},
+      create: {
+        ...productData,
+        categoryId: category.id
+      }
     });
   }
 

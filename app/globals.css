@@ -39,3 +39,37 @@ textarea,
 select {
   @apply w-full outline-none;
 }
+
+.catalog-filter-scroll {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.catalog-filter-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.catalog-product-card,
+.catalog-product-image {
+  transition-duration: 240ms;
+  transition-property: box-shadow, transform;
+  transition-timing-function: ease-out;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .catalog-product-card:hover {
+    box-shadow: 0 18px 46px rgba(13, 56, 89, 0.16);
+    transform: translateY(-3px);
+  }
+
+  .catalog-product-card:hover .catalog-product-image {
+    transform: scale(1.018);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .catalog-product-card,
+  .catalog-product-image {
+    transition-duration: 0.01ms;
+  }
+}

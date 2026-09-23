@@ -1,4 +1,4 @@
-import { LeadStatus, LeadType } from "@prisma/client";
+import { DeliveryWeekday, LeadStatus, LeadType } from "@prisma/client";
 import { z } from "zod";
 
 export const adminLoginSchema = z.object({
@@ -14,7 +14,8 @@ export const productSchema = z.object({
   fullDescription: z.string().trim().max(2000),
   recommendedUses: z.string().trim().max(1200),
   presentation: z.string().trim().max(500),
-  category: z.string().trim().max(80),
+  categoryId: z.string().trim().min(1),
+  badgeText: z.string().trim().max(60).optional().or(z.literal("")),
   imageUrl: z
     .string()
     .trim()
@@ -22,6 +23,19 @@ export const productSchema = z.object({
     .refine((value) => !value || value.startsWith("/") || z.string().url().safeParse(value).success, {
       message: "Usá una URL completa o una ruta local que empiece con /"
     }),
+  isActive: z.boolean(),
+  sortOrder: z.number().int().min(0).max(9999)
+});
+
+export const productCategorySchema = z.object({
+  id: z.string().optional(),
+  name: z.string().trim().min(2).max(80),
+  slug: z
+    .string()
+    .trim()
+    .min(2)
+    .max(100)
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Usá minúsculas, números y guiones"),
   isActive: z.boolean(),
   sortOrder: z.number().int().min(0).max(9999)
 });
@@ -68,6 +82,42 @@ export const promoClaimSchema = z.object({
 export const siteSettingSchema = z.object({
   key: z.string().trim().min(2).max(100),
   value: z.string().trim().max(5000)
+});
+
+export const deliveryZoneSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().trim().min(2).max(120),
+  deliveryWeekday: z.nativeEnum(DeliveryWeekday),
+  noticeAdvanceDays: z.number().int().min(0).max(14),
+  orderDeadlineWeekday: z.nativeEnum(DeliveryWeekday).optional().nullable(),
+  orderDeadlineTime: z
+    .string()
+    .trim()
+    .regex(/^([01]\d|2[0-3]):[0-5]\d$/, "Usá formato HH:mm"),
+  isActive: z.boolean(),
+  notes: z.string().trim().max(1000)
+});
+
+export const customerSchema = z.object({
+  id: z.string().optional(),
+  commercialName: z.string().trim().min(2).max(160),
+  contactName: z.string().trim().max(120),
+  phone: z.string().trim().max(40),
+  whatsapp: z.string().trim().max(40),
+  city: z.string().trim().min(2).max(120),
+  deliveryZoneId: z.string().trim().optional().or(z.literal("")),
+  isActive: z.boolean(),
+  receivesWhatsappReminders: z.boolean()
+});
+
+export const whatsappTemplateSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().trim().min(2).max(120),
+  content: z.string().trim().min(10).max(4000),
+  isActive: z.boolean(),
+  isDefault: z.boolean(),
+  metaTemplateName: z.string().trim().max(160).optional().or(z.literal("")),
+  metaLanguage: z.string().trim().max(20).optional().or(z.literal(""))
 });
 
 export const leadStatusSchema = z.nativeEnum(LeadStatus);

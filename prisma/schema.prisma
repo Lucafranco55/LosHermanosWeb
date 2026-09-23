@@ -23,20 +23,53 @@ enum PromoCodeStatus {
   CLAIMED
 }
 
+enum DeliveryWeekday {
+  MONDAY
+  TUESDAY
+  WEDNESDAY
+  THURSDAY
+  FRIDAY
+  SATURDAY
+  SUNDAY
+}
+
+enum WhatsAppNotificationStatus {
+  PENDING
+  SIMULATED
+  SENT
+  FAILED
+  SKIPPED
+}
+
 model Product {
-  id               String   @id @default(cuid())
+  id               String          @id @default(cuid())
   name             String
-  slug             String   @unique
+  slug             String          @unique
   shortDescription String
   fullDescription  String
-  recommendedUses  String   @default("")
-  presentation      String   @default("")
-  category         String
+  recommendedUses  String          @default("")
+  presentation     String          @default("")
+  categoryId       String
+  category         ProductCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   imageUrl         String
-  isActive         Boolean  @default(true)
-  sortOrder        Int      @default(0)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  badgeText        String?
+  isActive         Boolean         @default(true)
+  sortOrder        Int             @default(0)
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@index([categoryId, isActive, sortOrder])
+}
+
+model ProductCategory {
+  id        String    @id @default(cuid())
+  name      String    @unique
+  slug      String    @unique
+  isActive  Boolean   @default(true)
+  sortOrder Int       @default(0)
+  products  Product[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Zone {
@@ -94,6 +127,76 @@ model SiteSetting {
   value     String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model DeliveryZone {
+  id                   String                 @id @default(cuid())
+  name                 String                 @unique
+  deliveryWeekday      DeliveryWeekday
+  noticeAdvanceDays    Int                    @default(2)
+  orderDeadlineWeekday DeliveryWeekday?
+  orderDeadlineTime    String                 @default("13:00")
+  isActive             Boolean                @default(true)
+  notes                String                 @default("")
+  customers            Customer[]
+  notifications        WhatsAppNotification[]
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+}
+
+model Customer {
+  id                        String                 @id @default(cuid())
+  commercialName            String
+  contactName               String                 @default("")
+  phone                     String                 @default("")
+  whatsapp                  String                 @default("")
+  city                      String
+  deliveryZoneId            String?
+  deliveryZone              DeliveryZone?          @relation(fields: [deliveryZoneId], references: [id], onDelete: SetNull)
+  isActive                  Boolean                @default(true)
+  receivesWhatsappReminders Boolean                @default(true)
+  notifications             WhatsAppNotification[]
+  createdAt                 DateTime               @default(now())
+  updatedAt                 DateTime               @updatedAt
+
+  @@index([deliveryZoneId])
+  @@index([city])
+}
+
+model WhatsAppTemplate {
+  id               String                 @id @default(cuid())
+  name             String                 @unique
+  content          String
+  isActive         Boolean                @default(true)
+  isDefault        Boolean                @default(false)
+  metaTemplateName String?
+  metaLanguage     String?
+  notifications    WhatsAppNotification[]
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @updatedAt
+}
+
+model WhatsAppNotification {
+  id                String                     @id @default(cuid())
+  customerId        String
+  customer          Customer                   @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  zoneId            String
+  zone              DeliveryZone               @relation(fields: [zoneId], references: [id], onDelete: Restrict)
+  templateId        String?
+  template          WhatsAppTemplate?          @relation(fields: [templateId], references: [id], onDelete: SetNull)
+  deliveryDate      DateTime
+  scheduledFor      DateTime
+  attemptedAt       DateTime?
+  generatedMessage  String
+  status            WhatsAppNotificationStatus @default(PENDING)
+  providerMessageId String?
+  errorMessage      String?
+  createdAt         DateTime                   @default(now())
+  updatedAt         DateTime                   @updatedAt
+
+  @@unique([customerId, zoneId, deliveryDate])
+  @@index([scheduledFor, status])
+  @@index([zoneId, deliveryDate])
 }
 
 model AdminUser {

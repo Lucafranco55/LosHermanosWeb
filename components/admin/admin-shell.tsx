@@ -1,4 +1,4 @@
-import { LayoutDashboard, ListChecks, type LucideIcon, MapPinned, PackageSearch, Palette, Settings2, Ticket } from "lucide-react";
+import { LayoutDashboard, ListChecks, MessageCircle, type LucideIcon, MapPinned, PackageSearch, Palette, Settings2, Tags, Ticket } from "lucide-react";
 import Link from "next/link";
 import { ReactNode } from "react";
 import { BrandLogo } from "../site/brand-logo";
@@ -6,9 +6,11 @@ import { BrandLogo } from "../site/brand-logo";
 const navItems: Array<{ href: string; label: string; icon: LucideIcon }> = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/productos", label: "Productos", icon: PackageSearch },
+  { href: "/admin/categorias", label: "Categorías", icon: Tags },
   { href: "/admin/zonas", label: "Zonas", icon: MapPinned },
   { href: "/admin/puntos-de-venta", label: "Puntos de venta", icon: MapPinned },
   { href: "/admin/consultas", label: "Consultas", icon: ListChecks },
+  { href: "/admin/whatsapp", label: "WhatsApp", icon: MessageCircle },
   { href: "/admin/promo", label: "Promo", icon: Ticket },
   { href: "/admin/contenido", label: "Contenido", icon: Settings2 },
   { href: "/admin/personalizacion", label: "Personalización", icon: Palette }

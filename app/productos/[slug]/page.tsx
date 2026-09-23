@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { ProductImageViewer } from "@/components/site/product-image-viewer";
 import { PublicShell } from "@/components/site/public-shell";
 import { buildWhatsappUrl } from "@/lib/contact-links";
-import { getProductBySlug } from "@/lib/queries";
+import { getProductBySlug, getSiteSettingsMap } from "@/lib/queries";
 import { buildMetadata } from "@/lib/site";
 import { ArrowLeft, CheckCircle2, MessageCircle, Package, Wrench } from "lucide-react";
 
@@ -26,11 +26,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const [product, settings] = await Promise.all([getProductBySlug(slug), getSiteSettingsMap()]);
 
-  if (!product || !product.isActive) notFound();
+  if (!product || !product.isActive || !product.category.isActive) notFound();
 
-  const productWhatsappUrl = buildWhatsappUrl("2241562965", `Hola, quiero cotizar ${product.name}`);
+  const productWhatsappUrl = buildWhatsappUrl(settings["contact.whatsapp"], `Hola, quiero cotizar ${product.name}`);
 
   return (
     <PublicShell>
@@ -44,9 +44,16 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
           <ProductImageViewer src={product.imageUrl} alt={product.name} />
 
           <div className="rounded-[2rem] border border-brand-100 bg-white p-6 shadow-card sm:p-8">
-            <p className="inline-flex rounded-full bg-brand-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-brand-700">
-              {product.category || "Producto"}
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="inline-flex rounded-full bg-brand-50 px-4 py-2 text-xs font-bold uppercase tracking-[0.22em] text-brand-700">
+                {product.category.name}
+              </p>
+              {product.badgeText ? (
+                <span className="inline-flex rounded-full bg-slate-950 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-white">
+                  {product.badgeText}
+                </span>
+              ) : null}
+            </div>
             <h1 className="mt-4 text-4xl font-black tracking-tight text-slate-900 sm:text-5xl">{product.name}</h1>
             <p className="mt-4 text-base leading-7 text-slate-600">{product.shortDescription || fallbackDescription}</p>
 
@@ -68,7 +75,7 @@ export default async function ProductDetailPage({ params }: { params: Promise<{ 
               rel="noopener noreferrer"
               className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full bg-brand-700 px-6 py-3.5 text-sm font-semibold text-white shadow-card transition hover:bg-brand-800 sm:w-auto"
             >
-              Cotizar este producto
+              Consultar precio mayorista
               <MessageCircle className="h-4 w-4" />
             </a>
           </div>

@@ -2,6 +2,7 @@ import { AdminShell } from "@/components/admin/admin-shell";
 import { updatePersonalizationSettingsAction } from "../actions";
 import { requireAdmin } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { productBackgroundSettingKeys } from "@/lib/product-catalog-settings";
 
 export const dynamic = "force-dynamic";
 
@@ -39,7 +40,8 @@ const colorFields = [
 
 const allKeys = [
   ...textFields.flatMap((group) => group.fields.map((field) => field.key)),
-  ...colorFields.map((field) => field.key)
+  ...colorFields.map((field) => field.key),
+  ...productBackgroundSettingKeys
 ];
 
 function valueFor(settings: Record<string, string>, key: string) {
@@ -110,6 +112,69 @@ export default async function AdminPersonalizationPage({
                 />
               </label>
             ))}
+          </div>
+        </section>
+
+        <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-black tracking-tight text-slate-900">Fondo página Productos</h2>
+          <p className="mt-1 text-sm leading-6 text-slate-500">
+            Personaliza únicamente el fondo del catálogo. Predeterminado conserva el diseño actual.
+          </p>
+          <div className="mt-5 grid gap-4 sm:grid-cols-2">
+            <label className="grid gap-2 sm:col-span-2">
+              <span className="text-sm font-semibold text-slate-700">Tipo de fondo</span>
+              <select
+                name="products.backgroundMode"
+                defaultValue={valueFor(settings, "products.backgroundMode") || "default"}
+                className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm"
+              >
+                <option value="default">Predeterminado</option>
+                <option value="color">Color sólido</option>
+                <option value="gradient">Degradado</option>
+                <option value="image">Imagen de fondo</option>
+              </select>
+            </label>
+            <label className="grid gap-2">
+              <span className="text-sm font-semibold text-slate-700">Color sólido</span>
+              <input
+                type="color"
+                name="products.backgroundColor"
+                defaultValue={valueFor(settings, "products.backgroundColor") || "#f8fcff"}
+                className="h-12 rounded-2xl border border-slate-200 bg-white px-2 py-1"
+              />
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <label className="grid gap-2">
+                <span className="text-sm font-semibold text-slate-700">Degradado inicio</span>
+                <input
+                  type="color"
+                  name="products.gradientFrom"
+                  defaultValue={valueFor(settings, "products.gradientFrom") || "#e7f6ff"}
+                  className="h-12 rounded-2xl border border-slate-200 bg-white px-2 py-1"
+                />
+              </label>
+              <label className="grid gap-2">
+                <span className="text-sm font-semibold text-slate-700">Degradado final</span>
+                <input
+                  type="color"
+                  name="products.gradientTo"
+                  defaultValue={valueFor(settings, "products.gradientTo") || "#ffffff"}
+                  className="h-12 rounded-2xl border border-slate-200 bg-white px-2 py-1"
+                />
+              </label>
+            </div>
+            <label className="grid gap-2 sm:col-span-2">
+              <span className="text-sm font-semibold text-slate-700">Imagen de fondo</span>
+              <input
+                name="products.backgroundImage"
+                defaultValue={valueFor(settings, "products.backgroundImage")}
+                placeholder="/fondos/productos.jpg"
+                className="rounded-2xl border border-slate-200 px-4 py-3 text-sm"
+              />
+              <span className="text-xs leading-5 text-slate-500">
+                Usá una ruta de public/ que empiece con / o una URL web. La página aplica un overlay automático para conservar la legibilidad.
+              </span>
+            </label>
           </div>
         </section>
 

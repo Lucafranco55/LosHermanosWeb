@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import {
   leadStatusSchema,
+  productCategorySchema,
   productSchema,
   salePointSchema,
   siteSettingSchema,
@@ -30,7 +31,12 @@ const personalizationKeys = [
   "theme.primaryColor",
   "theme.secondaryColor",
   "theme.buttonColor",
-  "theme.backgroundColor"
+  "theme.backgroundColor",
+  "products.backgroundMode",
+  "products.backgroundColor",
+  "products.gradientFrom",
+  "products.gradientTo",
+  "products.backgroundImage"
 ];
 
 export async function upsertProductAction(formData: FormData) {
@@ -42,16 +48,20 @@ export async function upsertProductAction(formData: FormData) {
     fullDescription: textValue(formData, "fullDescription"),
     recommendedUses: textValue(formData, "recommendedUses"),
     presentation: textValue(formData, "presentation"),
-    category: textValue(formData, "category"),
+    categoryId: textValue(formData, "categoryId"),
     imageUrl: textValue(formData, "imageUrl"),
+    badgeText: textValue(formData, "badgeText"),
     isActive: toBoolean(formData.get("isActive")),
     sortOrder: toNumber(formData.get("sortOrder"))
   });
 
-  if (parsed.id) {
-    await prisma.product.update({ where: { id: parsed.id }, data: parsed });
+  const { id, badgeText, ...productData } = parsed;
+  const data = { ...productData, badgeText: badgeText || null };
+
+  if (id) {
+    await prisma.product.update({ where: { id }, data });
   } else {
-    await prisma.product.create({ data: parsed });
+    await prisma.product.create({ data });
   }
 
   revalidatePath("/");
@@ -59,6 +69,43 @@ export async function upsertProductAction(formData: FormData) {
   revalidatePath(`/productos/${parsed.slug}`);
   revalidatePath("/admin");
   revalidatePath("/admin/productos");
+}
+
+export async function upsertProductCategoryAction(formData: FormData) {
+  const parsed = productCategorySchema.parse({
+    id: textValue(formData, "id") || undefined,
+    name: textValue(formData, "name"),
+    slug: textValue(formData, "slug"),
+    isActive: toBoolean(formData.get("isActive")),
+    sortOrder: toNumber(formData.get("sortOrder"))
+  });
+  const { id, ...data } = parsed;
+
+  if (id) {
+    await prisma.productCategory.update({ where: { id }, data });
+  } else {
+    await prisma.productCategory.create({ data });
+  }
+
+  revalidatePath("/");
+  revalidatePath("/productos");
+  revalidatePath("/admin/productos");
+  revalidatePath("/admin/categorias");
+}
+
+export async function deleteProductCategoryAction(formData: FormData) {
+  const id = textValue(formData, "id");
+  if (!id) return;
+
+  const productsCount = await prisma.product.count({ where: { categoryId: id } });
+  if (productsCount > 0) {
+    redirect("/admin/categorias?error=in-use");
+  }
+
+  await prisma.productCategory.delete({ where: { id } });
+  revalidatePath("/productos");
+  revalidatePath("/admin/productos");
+  revalidatePath("/admin/categorias");
 }
 
 export async function deleteProductAction(formData: FormData) {
@@ -183,6 +230,7 @@ export async function upsertSiteSettingAction(formData: FormData) {
   revalidatePath("/contacto");
   revalidatePath("/cobertura");
   revalidatePath("/calidad");
+  revalidatePath("/productos");
   revalidatePath("/admin/contenido");
 }
 

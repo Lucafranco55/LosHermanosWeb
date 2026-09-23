@@ -23,7 +23,7 @@ export function ProductImageViewer({ src, alt }: ProductImageViewerProps) {
         <img
           src={imageSrc}
           alt={alt}
-          className="h-[320px] w-full object-cover transition duration-500 group-hover:scale-[1.03] sm:h-[460px] lg:h-[540px]"
+          className="catalog-product-image h-[320px] w-full bg-[linear-gradient(145deg,#f8fcff_0%,#eef7fc_100%)] object-contain p-5 sm:h-[460px] sm:p-8 lg:h-[540px]"
         />
         <span className="absolute bottom-5 right-5 inline-flex items-center gap-2 rounded-full bg-slate-950/80 px-4 py-2 text-sm font-semibold text-white backdrop-blur transition group-hover:bg-slate-950">
           Ampliar
