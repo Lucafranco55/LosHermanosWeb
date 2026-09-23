@@ -1,5 +1,4 @@
 import type { CSSProperties } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Package, PackageSearch } from "lucide-react";
 
@@ -94,13 +93,11 @@ export function ProductCatalog({
               <article key={product.id} className="catalog-product-card group min-w-0 overflow-hidden rounded-[1.5rem] border border-white/80 bg-white shadow-[0_12px_38px_rgba(13,56,89,0.10)]">
                 <Link href={`/productos/${product.slug}`} className="flex h-full min-h-full flex-col focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand-300" aria-label={`Ver ${product.name}`}>
                   <div className="relative aspect-[4/3] overflow-hidden border-b border-slate-100 bg-[linear-gradient(145deg,#f8fcff_0%,#eef7fc_100%)] p-3 sm:p-4">
-                    <Image
+                    <img
                       src={product.imageUrl || fallbackProductImage}
                       alt={product.name}
-                      fill
-                      priority={index < 4}
-                      sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, (min-width: 380px) 50vw, 100vw"
-                      className="catalog-product-image object-contain p-3 sm:p-4"
+                      loading={index < 4 ? "eager" : "lazy"}
+                      className="catalog-product-image h-full w-full object-contain object-center"
                     />
                   </div>
 
